@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 using Dominio.Excepciones;
-using Dominio.Interfaces;
+using Dominio.InterfacesDominio;
 
 namespace Dominio.ValueObjects;
 
@@ -15,6 +15,11 @@ public class Email : IValidable
     {
         Direccion = direccion;
         Validar();
+    }
+
+    protected Email()
+    {
+        Direccion = string.Empty;
     }
 
     public void Validar()

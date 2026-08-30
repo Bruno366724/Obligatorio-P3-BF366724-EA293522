@@ -1,5 +1,5 @@
 using Dominio.Excepciones;
-using Dominio.Interfaces;
+using Dominio.InterfacesDominio;
 
 namespace Dominio.ValueObjects;
 
@@ -13,6 +13,11 @@ public class Password : IValidable
     {
         Valor = valor;
         Validar();
+    }
+
+    protected Password()
+    {
+        Valor = string.Empty;
     }
 
     public void Validar()
@@ -32,6 +37,11 @@ public class Password : IValidable
         if (!Valor.Any(c => !char.IsLetterOrDigit(c)))
             throw new DomainException("La contraseña debe incluir al menos un carácter especial.");
     }
+
+    public override bool Equals(object? obj) =>
+        obj is Password otra && Valor == otra.Valor;
+
+    public override int GetHashCode() => Valor.GetHashCode();
 
     public override string ToString() => new string('*', Valor.Length);
 }

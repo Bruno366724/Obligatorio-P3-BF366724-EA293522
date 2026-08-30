@@ -1,5 +1,5 @@
 using Dominio.Excepciones;
-using Dominio.Interfaces;
+using Dominio.InterfacesDominio;
 
 namespace Dominio.Entidades;
 
