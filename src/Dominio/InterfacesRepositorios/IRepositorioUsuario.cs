@@ -4,5 +4,5 @@ namespace Dominio.InterfacesRepositorios;
 
 public interface IRepositorioUsuario : IRepositorio<Usuario>
 {
-    Usuario? FindByNombreUsuario(string nombreUsuario);
+    Usuario FindByNombreUsuario(string nombreUsuario);
 }

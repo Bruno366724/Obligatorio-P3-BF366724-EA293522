@@ -12,6 +12,8 @@ public class Auditoria : IValidable
     public Usuario? Administrador { get; set; }
     public int HistoriaId { get; set; }
     public Historia? Historia { get; set; }
+    public int? CapituloId { get; set; }
+    public Capitulo? Capitulo { get; set; }
 
     public void Validar()
     {
