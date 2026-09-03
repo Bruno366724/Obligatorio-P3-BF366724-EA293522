@@ -13,7 +13,7 @@ public class Historia : IValidable
     public List<Categoria> Categorias { get; set; } = new();
     public List<Capitulo> Capitulos { get; set; } = new();
     public int CapituloInicialId { get; set; }
-    public Capitulo? CapituloInicial { get; set; }
+    public CapituloIntermedio? CapituloInicial { get; set; }
 
     public void Validar()
     {
@@ -28,9 +28,6 @@ public class Historia : IValidable
 
         if (CapituloInicial is null)
             throw new DomainException("La historia debe tener un capítulo inicial.");
-
-        if (CapituloInicial is CapituloFinal)
-            throw new DomainException("El capítulo inicial no puede ser de tipo final.");
     }
 
     public void ValidarParaPublicar()

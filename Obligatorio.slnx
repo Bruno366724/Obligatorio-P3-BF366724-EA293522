@@ -2,6 +2,8 @@
   <Folder Name="/src/">
     <Project Path="src/AccesoDatos/AccesoDatos.csproj" />
     <Project Path="src/Dominio/Dominio.csproj" />
+    <Project Path="src/DTOs/DTOs.csproj" />
     <Project Path="src/LogicaAplicacion/LogicaAplicacion.csproj" />
+    <Project Path="src/Presentacion/Presentacion.csproj" />
   </Folder>
 </Solution>
