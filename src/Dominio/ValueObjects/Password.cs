@@ -1,8 +1,10 @@
 using Dominio.Excepciones;
 using Dominio.InterfacesDominio;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dominio.ValueObjects;
 
+[Owned]
 public class Password : IValidable
 {
     private const int LongitudMinima = 8;

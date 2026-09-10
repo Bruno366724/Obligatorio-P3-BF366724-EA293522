@@ -1,9 +1,11 @@
 using System.Text.RegularExpressions;
 using Dominio.Excepciones;
 using Dominio.InterfacesDominio;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dominio.ValueObjects;
 
+[Owned]
 public class Email : IValidable
 {
     private static readonly Regex FormatoValido = new(
