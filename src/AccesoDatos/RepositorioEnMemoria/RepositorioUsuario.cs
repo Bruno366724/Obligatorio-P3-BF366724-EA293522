@@ -5,9 +5,12 @@ namespace AccesoDatos.Repositorios;
 
 public class RepositorioUsuario : IRepositorioUsuario
 {
+
+    private static List<Usuario> usuarios = new List<Usuario>();
+
     public IEnumerable<Usuario> FindAll()
     {
-        throw new NotImplementedException();
+        return new List<Usuario>(usuarios);
     }
 
     public Usuario FindByID(int id)
