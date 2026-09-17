@@ -6,6 +6,7 @@
 
 <h1>@Model.Titulo</h1>
 
+<div class="card p-4">
 <dl class="row">
     <dt class="col-sm-2">Sinopsis</dt>
     <dd class="col-sm-10">@Model.Sinopsis</dd>
@@ -18,22 +19,31 @@
 
     <dt class="col-sm-2">Capítulos</dt>
     <dd class="col-sm-10">
-        <ul>
+        <ul class="list-unstyled">
 @foreach (DTOs.DTOs.CapituloDTO capitulo in Model.Capitulos)
 {
-            <li>
+            <li class="mb-1">
                 @capitulo.Titulo
                 @if (capitulo.Id == Model.CapituloInicialId)
                 {
                     <strong>(inicial)</strong>
+                }
+                @* Solo los capítulos intermedios pueden tener un capítulo siguiente (RF04). *@
+                @if (capitulo is DTOs.DTOs.CapituloIntermedioDTO)
+                {
+                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" disabled
+                            title="Disponible cuando implementemos RF04">
+                        Agregar capítulo siguiente
+                    </button>
                 }
             </li>
 }
         </ul>
     </dd>
 </dl>
+</div>
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Editar</a> |
-    <a asp-action="Index">Volver al listado</a>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
 </div>
