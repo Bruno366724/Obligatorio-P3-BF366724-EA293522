@@ -7,11 +7,19 @@ public static class CategoriaMapper
 {
     public static Categoria FromDTO(CategoriaDTO dto)
     {
-        throw new NotImplementedException();
+        return new Categoria
+        {
+            Id = dto.Id,
+            Nombre = dto.Nombre
+        };
     }
 
     public static CategoriaDTO ToDTO(Categoria categoria)
     {
-        throw new NotImplementedException();
+        return new CategoriaDTO
+        {
+            Id = categoria.Id,
+            Nombre = categoria.Nombre
+        };
     }
 }

@@ -29,3 +29,63 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+:root {
+  --gris-900: #212529;
+  --gris-800: #343a40;
+  --gris-700: #495057;
+  --gris-500: #868e96;
+  --gris-300: #ced4da;
+  --gris-200: #e9ecef;
+  --gris-100: #f4f5f6;
+}
+
+body {
+  background-color: var(--gris-100);
+  color: var(--gris-900);
+}
+
+.navbar {
+  background-color: #ffffff !important;
+  border-bottom: 1px solid var(--gris-300) !important;
+}
+
+.navbar-brand {
+  color: var(--gris-900) !important;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background-color: var(--gris-700);
+  border-color: var(--gris-700);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: var(--gris-800);
+  border-color: var(--gris-800);
+}
+
+.btn-outline-secondary {
+  color: var(--gris-700);
+  border-color: var(--gris-500);
+}
+
+.table thead {
+  background-color: var(--gris-200);
+}
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid var(--gris-300);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+h1 {
+  color: var(--gris-800);
+}
+
+footer.footer {
+  background-color: #ffffff;
+  color: var(--gris-500);
+}

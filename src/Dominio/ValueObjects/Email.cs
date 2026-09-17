@@ -1,15 +1,17 @@
 using System.Text.RegularExpressions;
 using Dominio.Excepciones;
 using Dominio.InterfacesDominio;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dominio.ValueObjects;
 
-public class Email : IValidable
+[Owned]
+public record Email : IValidable
 {
     private static readonly Regex FormatoValido = new(
         @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
 
-    public string Direccion { get; }
+    public string Direccion { get; init; } = string.Empty;
 
     public Email(string direccion)
     {
@@ -19,17 +21,16 @@ public class Email : IValidable
 
     protected Email()
     {
-        Direccion = string.Empty;
     }
 
     public void Validar()
     {
         if (string.IsNullOrWhiteSpace(Direccion) || !FormatoValido.IsMatch(Direccion))
-            throw new DomainException("El email ingresado no es válido.");
+            throw new UsuarioException("El email ingresado no es válido.");
     }
 
-    public override bool Equals(object? obj) =>
-        obj is Email otro && Direccion.Equals(otro.Direccion, StringComparison.OrdinalIgnoreCase);
+    public virtual bool Equals(Email? otro) =>
+        otro is not null && Direccion.Equals(otro.Direccion, StringComparison.OrdinalIgnoreCase);
 
     public override int GetHashCode() => Direccion.ToLowerInvariant().GetHashCode();
 

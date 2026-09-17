@@ -13,9 +13,9 @@ public abstract class Capitulo : IValidable
     public virtual void Validar()
     {
         if (string.IsNullOrWhiteSpace(Titulo))
-            throw new DomainException("El título del capítulo es obligatorio.");
+            throw new HistoriaException("El título del capítulo es obligatorio.");
 
         if (string.IsNullOrWhiteSpace(Texto))
-            throw new DomainException("El texto del capítulo es obligatorio.");
+            throw new HistoriaException("El texto del capítulo es obligatorio.");
     }
 }

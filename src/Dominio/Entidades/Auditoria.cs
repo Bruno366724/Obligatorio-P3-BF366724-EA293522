@@ -18,12 +18,12 @@ public class Auditoria : IValidable
     public void Validar()
     {
         if (string.IsNullOrWhiteSpace(Accion))
-            throw new DomainException("La acción registrada en la auditoría es obligatoria.");
+            throw new AuditoriaException("La acción registrada en la auditoría es obligatoria.");
 
         if (AdministradorId <= 0 && Administrador is null)
-            throw new DomainException("La auditoría debe estar asociada a un administrador.");
+            throw new AuditoriaException("La auditoría debe estar asociada a un administrador.");
 
         if (HistoriaId <= 0 && Historia is null)
-            throw new DomainException("La auditoría debe estar asociada a una historia.");
+            throw new AuditoriaException("La auditoría debe estar asociada a una historia.");
     }
 }

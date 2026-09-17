@@ -1,13 +1,15 @@
 using Dominio.Excepciones;
 using Dominio.InterfacesDominio;
+using Microsoft.EntityFrameworkCore;
 
 namespace Dominio.ValueObjects;
 
-public class Password : IValidable
+[Owned]
+public record Password : IValidable
 {
     private const int LongitudMinima = 8;
 
-    public string Valor { get; }
+    public string Valor { get; init; } = string.Empty;
 
     public Password(string valor)
     {
@@ -17,31 +19,25 @@ public class Password : IValidable
 
     protected Password()
     {
-        Valor = string.Empty;
     }
 
     public void Validar()
     {
         if (string.IsNullOrEmpty(Valor) || Valor.Length < LongitudMinima)
-            throw new DomainException($"La contraseña debe tener al menos {LongitudMinima} caracteres.");
+            throw new UsuarioException($"La contraseña debe tener al menos {LongitudMinima} caracteres.");
 
         if (!Valor.Any(char.IsUpper))
-            throw new DomainException("La contraseña debe incluir al menos una letra mayúscula.");
+            throw new UsuarioException("La contraseña debe incluir al menos una letra mayúscula.");
 
         if (!Valor.Any(char.IsLower))
-            throw new DomainException("La contraseña debe incluir al menos una letra minúscula.");
+            throw new UsuarioException("La contraseña debe incluir al menos una letra minúscula.");
 
         if (!Valor.Any(char.IsDigit))
-            throw new DomainException("La contraseña debe incluir al menos un número.");
+            throw new UsuarioException("La contraseña debe incluir al menos un número.");
 
         if (!Valor.Any(c => !char.IsLetterOrDigit(c)))
-            throw new DomainException("La contraseña debe incluir al menos un carácter especial.");
+            throw new UsuarioException("La contraseña debe incluir al menos un carácter especial.");
     }
-
-    public override bool Equals(object? obj) =>
-        obj is Password otra && Valor == otra.Valor;
-
-    public override int GetHashCode() => Valor.GetHashCode();
 
     public override string ToString() => new string('*', Valor.Length);
 }

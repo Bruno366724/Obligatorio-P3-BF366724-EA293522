@@ -11,6 +11,6 @@ public class Categoria : IValidable
     public void Validar()
     {
         if (string.IsNullOrWhiteSpace(Nombre))
-            throw new DomainException("El nombre de la categoría es obligatorio.");
+            throw new CategoriaException("El nombre de la categoría es obligatorio.");
     }
 }
