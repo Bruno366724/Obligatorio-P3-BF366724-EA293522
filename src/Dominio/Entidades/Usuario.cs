@@ -17,16 +17,16 @@ public class Usuario : IValidable
     public void Validar()
     {
         if (string.IsNullOrWhiteSpace(NombreCompleto))
-            throw new DomainException("El nombre completo es obligatorio.");
+            throw new UsuarioException("El nombre completo es obligatorio.");
 
         if (string.IsNullOrWhiteSpace(NombreUsuario))
-            throw new DomainException("El nombre de usuario es obligatorio.");
+            throw new UsuarioException("El nombre de usuario es obligatorio.");
 
         if (Email is null)
-            throw new DomainException("El email es obligatorio.");
+            throw new UsuarioException("El email es obligatorio.");
 
         if (Password is null)
-            throw new DomainException("La contraseña es obligatoria.");
+            throw new UsuarioException("La contraseña es obligatoria.");
 
         Email.Validar();
         Password.Validar();

@@ -43,7 +43,7 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Remove(int id)
         {
-            var lectura = contexto.Lecturas.Find(id);
+            Lectura? lectura = contexto.Lecturas.Find(id);
             if (lectura is not null)
             {
                 contexto.Lecturas.Remove(lectura);

@@ -31,7 +31,7 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Remove(int id)
         {
-            var usuario = contexto.Usuarios.Find(id);
+            Usuario? usuario = contexto.Usuarios.Find(id);
             if (usuario is not null)
             {
                 contexto.Usuarios.Remove(usuario);

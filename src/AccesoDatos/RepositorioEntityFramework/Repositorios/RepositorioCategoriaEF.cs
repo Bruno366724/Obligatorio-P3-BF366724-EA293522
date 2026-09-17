@@ -26,7 +26,7 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Remove(int id)
         {
-            var categoria = contexto.Categorias.Find(id);
+            Categoria? categoria = contexto.Categorias.Find(id);
             if (categoria is not null)
             {
                 contexto.Categorias.Remove(categoria);

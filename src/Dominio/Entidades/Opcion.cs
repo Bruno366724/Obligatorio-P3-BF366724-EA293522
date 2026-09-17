@@ -13,9 +13,9 @@ public class Opcion : IValidable
     public void Validar()
     {
         if (string.IsNullOrWhiteSpace(Texto))
-            throw new DomainException("El texto de la opción es obligatorio.");
+            throw new HistoriaException("El texto de la opción es obligatorio.");
 
         if (CapituloDestinoId <= 0 && CapituloDestino is null)
-            throw new DomainException("La opción debe llevar a un capítulo destino.");
+            throw new HistoriaException("La opción debe llevar a un capítulo destino.");
     }
 }

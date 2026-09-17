@@ -1,5 +1,6 @@
 using Dominio.InterfacesRepositorios;
 using DTOs.DTOs;
+using DTOs.Mappers;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Historias;
 
 namespace LogicaAplicacion.CasosDeUso.Historias;
@@ -15,6 +16,8 @@ public class EncontrarTodasHistoriasCU : IEncontrarTodasHistorias
 
     public List<HistoriaDTO> Ejecutar()
     {
-        throw new NotImplementedException();
+        return repositorio.FindAll()
+            .Select(historia => HistoriaMapper.ToDTO(historia))
+            .ToList();
     }
 }

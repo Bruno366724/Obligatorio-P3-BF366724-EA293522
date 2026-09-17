@@ -18,12 +18,12 @@ public class Lectura : IValidable
     public void Validar()
     {
         if (UsuarioId <= 0 && Usuario is null)
-            throw new DomainException("La lectura debe estar asociada a un usuario.");
+            throw new LecturaException("La lectura debe estar asociada a un usuario.");
 
         if (HistoriaId <= 0 && Historia is null)
-            throw new DomainException("La lectura debe estar asociada a una historia.");
+            throw new LecturaException("La lectura debe estar asociada a una historia.");
 
         if (FechaFin.HasValue && FechaFin.Value < FechaInicio)
-            throw new DomainException("La fecha de finalización no puede ser anterior a la fecha de inicio.");
+            throw new LecturaException("La fecha de finalización no puede ser anterior a la fecha de inicio.");
     }
 }

@@ -11,7 +11,7 @@ public class CapituloIntermedio : Capitulo
         base.Validar();
 
         if (Opciones.Count == 0)
-            throw new DomainException("Un capítulo intermedio debe tener al menos una opción.");
+            throw new HistoriaException("Un capítulo intermedio debe tener al menos una opción.");
 
         Opciones.ForEach(opcion => opcion.Validar());
     }

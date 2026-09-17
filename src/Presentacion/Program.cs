@@ -12,7 +12,7 @@ using LogicaAplicacion.InterfacesDeCasoDeUso.Historias;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Lecturas;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Usuarios;
 
-var builder = WebApplication.CreateBuilder(args);
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 
@@ -37,6 +37,7 @@ builder.Services.AddScoped<IEncontrarTodasCategorias, EncontrarTodasCategoriasCU
 builder.Services.AddScoped<IAgregarHistoria, AgregarHistoriaCU>();
 builder.Services.AddScoped<IObtenerHistoriaPorId, ObtenerHistoriaPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodasHistorias, EncontrarTodasHistoriasCU>();
+builder.Services.AddScoped<IEditarHistoria, EditarHistoriaCU>();
 
 builder.Services.AddScoped<IAgregarLectura, AgregarLecturaCU>();
 builder.Services.AddScoped<IObtenerLecturaPorId, ObtenerLecturaPorIdCU>();
@@ -46,7 +47,7 @@ builder.Services.AddScoped<IAgregarAuditoria, AgregarAuditoriaCU>();
 builder.Services.AddScoped<IObtenerAuditoriaPorId, ObtenerAuditoriaPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodasAuditorias, EncontrarTodasAuditoriasCU>();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {

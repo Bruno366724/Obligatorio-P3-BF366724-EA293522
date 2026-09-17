@@ -1,3 +1,4 @@
+using Dominio.Entidades;
 using Dominio.Enumerados;
 using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
@@ -18,12 +19,12 @@ public class IniciarSesionCU : IIniciarSesion
 
     public UsuarioDTO Ejecutar(string nombreUsuario, string password)
     {
-        var usuario = repositorio.FindByNombreUsuario(nombreUsuario);
+        Usuario usuario = repositorio.FindByNombreUsuario(nombreUsuario);
         if (usuario is null || usuario.Password.Valor != password)
-            throw new DomainException("Usuario o contraseña incorrectos.");
+            throw new UsuarioException("Usuario o contraseña incorrectos.");
 
         if (usuario.Rol != RolUsuario.Administrador)
-            throw new DomainException("Solo los administradores pueden ingresar a esta aplicación.");
+            throw new UsuarioException("Solo los administradores pueden ingresar a esta aplicación.");
 
         return UsuarioMapper.ToDTO(usuario);
     }
