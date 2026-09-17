@@ -21,25 +21,21 @@ public class LecturaController : Controller
         encontrarTodasLecturas = encontrarTodasLecturasCu;
     }
 
-    // GET: LecturaController
     public ActionResult Index()
     {
         return View(encontrarTodasLecturas.Ejecutar());
     }
 
-    // GET: LecturaController/Details/5
     public ActionResult Details(int id)
     {
         return View(obtenerLecturaPorId.Ejecutar(id));
     }
 
-    // GET: LecturaController/Create
     public ActionResult Create()
     {
         return View();
     }
 
-    // POST: LecturaController/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Create(LecturaDTO lectura)
@@ -55,13 +51,11 @@ public class LecturaController : Controller
         }
     }
 
-    // GET: LecturaController/Edit/5
     public ActionResult Edit(int id)
     {
         return View();
     }
 
-    // POST: LecturaController/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Edit(int id, IFormCollection collection)
@@ -76,13 +70,11 @@ public class LecturaController : Controller
         }
     }
 
-    // GET: LecturaController/Delete/5
     public ActionResult Delete(int id)
     {
         return View();
     }
 
-    // POST: LecturaController/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Delete(int id, IFormCollection collection)

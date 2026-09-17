@@ -5,8 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dominio.ValueObjects;
 
-// CAMBIO: pasado de "class" con propiedad get-only a "record" con "init", igual a como lo hizo el profe en RedSocial
-
 [Owned]
 public record Email : IValidable
 {

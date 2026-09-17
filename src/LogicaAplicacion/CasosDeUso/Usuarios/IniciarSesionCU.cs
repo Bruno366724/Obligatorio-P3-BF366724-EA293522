@@ -22,7 +22,6 @@ public class IniciarSesionCU : IIniciarSesion
         if (usuario is null || usuario.Password.Valor != password)
             throw new DomainException("Usuario o contraseña incorrectos.");
 
-        // RF01 es solo para administradores; los Lectores entran por la otra app (RF06).
         if (usuario.Rol != RolUsuario.Administrador)
             throw new DomainException("Solo los administradores pueden ingresar a esta aplicación.");
 

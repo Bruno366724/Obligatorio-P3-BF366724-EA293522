@@ -21,25 +21,21 @@ public class HistoriaController : Controller
         encontrarTodasHistorias = encontrarTodasHistoriasCu;
     }
 
-    // GET: HistoriaController
     public ActionResult Index()
     {
         return View(encontrarTodasHistorias.Ejecutar());
     }
 
-    // GET: HistoriaController/Details/5
     public ActionResult Details(int id)
     {
         return View(obtenerHistoriaPorId.Ejecutar(id));
     }
 
-    // GET: HistoriaController/Create
     public ActionResult Create()
     {
         return View();
     }
 
-    // POST: HistoriaController/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Create(HistoriaDTO historia)
@@ -55,13 +51,11 @@ public class HistoriaController : Controller
         }
     }
 
-    // GET: HistoriaController/Edit/5
     public ActionResult Edit(int id)
     {
         return View();
     }
 
-    // POST: HistoriaController/Edit/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Edit(int id, IFormCollection collection)
@@ -76,13 +70,11 @@ public class HistoriaController : Controller
         }
     }
 
-    // GET: HistoriaController/Delete/5
     public ActionResult Delete(int id)
     {
         return View();
     }
 
-    // POST: HistoriaController/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Delete(int id, IFormCollection collection)

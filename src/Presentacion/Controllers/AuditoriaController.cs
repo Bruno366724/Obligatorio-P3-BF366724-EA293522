@@ -17,13 +17,11 @@ public class AuditoriaController : Controller
         encontrarTodasAuditorias = encontrarTodasAuditoriasCu;
     }
 
-    // GET: AuditoriaController
     public ActionResult Index()
     {
         return View(encontrarTodasAuditorias.Ejecutar());
     }
 
-    // GET: AuditoriaController/Details/5
     public ActionResult Details(int id)
     {
         return View(obtenerAuditoriaPorId.Ejecutar(id));

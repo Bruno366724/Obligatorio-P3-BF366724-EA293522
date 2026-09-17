@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dominio.ValueObjects;
 
-// CAMBIO: pasado de "class" con propiedad get-only a "record" con "init"
 [Owned]
 public record Password : IValidable
 {
