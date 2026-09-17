@@ -364,5 +364,3 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-# Notas locales para Claude Code, no se suben al repo
-CLAUDE.md
