@@ -13,7 +13,6 @@ public class CapituloIntermedio : Capitulo
         if (Opciones.Count == 0)
             throw new DomainException("Un capítulo intermedio debe tener al menos una opción.");
 
-        foreach (var opcion in Opciones)
-            opcion.Validar();
+        Opciones.ForEach(opcion => opcion.Validar());
     }
 }

@@ -17,12 +17,8 @@ public class EncontrarTodosUsuariosCU : IEncontrarTodosUsuarios
 
     public List<UsuarioDTO> Ejecutar()
     {
-        List<Usuario> usuarios = (List<Usuario>)repositorio.FindAll();
-        List<UsuarioDTO> aRetornar = new List<UsuarioDTO>();
-        foreach (Usuario usuario in usuarios)
-        {
-            aRetornar.Add(UsuarioMapper.ToDTO(usuario));
-        }
-        return aRetornar;
+        return repositorio.FindAll()
+            .Select(usuario => UsuarioMapper.ToDTO(usuario))
+            .ToList();
     }
 }

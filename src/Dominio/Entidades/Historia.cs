@@ -34,8 +34,7 @@ public class Historia : IValidable
     {
         Validar();
 
-        foreach (var capitulo in Capitulos)
-            capitulo.Validar();
+        Capitulos.ForEach(capitulo => capitulo.Validar());
 
         Estado = EstadoHistoria.Publicada;
     }
