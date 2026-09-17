@@ -1,3 +1,4 @@
+using Dominio.Entidades;
 using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using DTOs.DTOs;
@@ -17,9 +18,9 @@ public class ObtenerUsuarioPorIdCU : IObtenerUsuarioPorId
 
     public UsuarioDTO Ejecutar(int id)
     {
-        var usuario = repositorio.FindByID(id);
+        Usuario usuario = repositorio.FindByID(id);
         if (usuario is null)
-            throw new DomainException("No se encontró el usuario solicitado.");
+            throw new UsuarioException("No se encontró el usuario solicitado.");
 
         return UsuarioMapper.ToDTO(usuario);
     }

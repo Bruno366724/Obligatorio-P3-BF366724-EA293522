@@ -10,5 +10,5 @@ public class HistoriaDTO
     public EstadoHistoria Estado { get; set; }
     public List<CategoriaDTO> Categorias { get; set; } = new();
     public List<CapituloDTO> Capitulos { get; set; } = new();
-    public int CapituloInicialId { get; set; }
+    public int? CapituloInicialId { get; set; }
 }

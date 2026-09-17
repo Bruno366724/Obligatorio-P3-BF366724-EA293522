@@ -1,0 +1,36 @@
+@model List<DTOs.DTOs.HistoriaDTO>
+
+@{
+    ViewData["Title"] = "Historias";
+}
+
+<h1>Historias</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Nueva historia</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Estado</th>
+            <th>Categorías</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (DTOs.DTOs.HistoriaDTO historia in Model)
+{
+        <tr>
+            <td>@historia.Titulo</td>
+            <td>@historia.Estado</td>
+            <td>@string.Join(", ", historia.Categorias.Select(c => c.Nombre))</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@historia.Id">Detalles</a> |
+                <a asp-action="Edit" asp-route-id="@historia.Id">Editar</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

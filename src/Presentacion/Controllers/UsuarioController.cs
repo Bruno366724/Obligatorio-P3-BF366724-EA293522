@@ -36,7 +36,7 @@ public class UsuarioController : Controller
     {
         try
         {
-            var usuario = iniciarSesion.Ejecutar(nombreUsuario, password);
+            UsuarioDTO usuario = iniciarSesion.Ejecutar(nombreUsuario, password);
 
             HttpContext.Session.SetInt32("UsuarioId", usuario.Id);
             HttpContext.Session.SetString("NombreUsuario", usuario.NombreUsuario);

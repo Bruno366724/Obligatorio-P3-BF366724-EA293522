@@ -44,7 +44,7 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Remove(int id)
         {
-            var auditoria = contexto.Auditorias.Find(id);
+            Auditoria? auditoria = contexto.Auditorias.Find(id);
             if (auditoria is not null)
             {
                 contexto.Auditorias.Remove(auditoria);

@@ -26,7 +26,7 @@ public record Email : IValidable
     public void Validar()
     {
         if (string.IsNullOrWhiteSpace(Direccion) || !FormatoValido.IsMatch(Direccion))
-            throw new DomainException("El email ingresado no es válido.");
+            throw new UsuarioException("El email ingresado no es válido.");
     }
 
     public virtual bool Equals(Email? otro) =>

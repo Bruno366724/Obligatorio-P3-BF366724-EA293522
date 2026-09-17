@@ -7,11 +7,21 @@ public static class OpcionMapper
 {
     public static Opcion FromDTO(OpcionDTO dto)
     {
-        throw new NotImplementedException();
+        return new Opcion
+        {
+            Id = dto.Id,
+            Texto = dto.Texto,
+            CapituloDestinoId = dto.CapituloDestinoId
+        };
     }
 
     public static OpcionDTO ToDTO(Opcion opcion)
     {
-        throw new NotImplementedException();
+        return new OpcionDTO
+        {
+            Id = opcion.Id,
+            Texto = opcion.Texto,
+            CapituloDestinoId = opcion.CapituloDestinoId
+        };
     }
 }

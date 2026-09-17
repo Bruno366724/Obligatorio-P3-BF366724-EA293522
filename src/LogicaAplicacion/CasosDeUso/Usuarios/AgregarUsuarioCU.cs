@@ -1,3 +1,4 @@
+using Dominio.Entidades;
 using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using DTOs.DTOs;
@@ -18,9 +19,9 @@ public class AgregarUsuarioCU : IAgregarUsuario
     public void Ejecutar(UsuarioDTO dto)
     {
         if (repositorio.FindByNombreUsuario(dto.NombreUsuario) is not null)
-            throw new DomainException("Ya existe un usuario con ese nombre de usuario.");
+            throw new UsuarioException("Ya existe un usuario con ese nombre de usuario.");
 
-        var usuario = UsuarioMapper.FromDTO(dto);
+        Usuario usuario = UsuarioMapper.FromDTO(dto);
         usuario.Validar();
         repositorio.Add(usuario);
     }

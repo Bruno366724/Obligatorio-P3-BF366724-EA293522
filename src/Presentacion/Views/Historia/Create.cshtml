@@ -1,0 +1,53 @@
+@{
+    ViewData["Title"] = "Nueva historia";
+    List<DTOs.DTOs.CategoriaDTO> categorias = ViewBag.Categorias;
+}
+
+<h1>Nueva historia</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label for="titulo">Título</label>
+                <input name="titulo" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="sinopsis">Sinopsis</label>
+                <textarea name="sinopsis" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Categorías</label>
+@foreach (DTOs.DTOs.CategoriaDTO categoria in categorias)
+{
+                <div class="form-check">
+                    <input type="checkbox" class="form-check-input" name="categoriaIds" value="@categoria.Id" />
+                    <label class="form-check-label">@categoria.Nombre</label>
+                </div>
+}
+            </div>
+
+            <hr />
+            <p class="text-muted">Toda historia nace con un capítulo inicial (sin opciones todavía).</p>
+
+            <div class="form-group">
+                <label for="capituloInicialTitulo">Título del capítulo inicial</label>
+                <input name="capituloInicialTitulo" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="capituloInicialTexto">Texto del capítulo inicial</label>
+                <textarea name="capituloInicialTexto" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Crear" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Volver al listado</a>
+</div>
