@@ -1,5 +1,7 @@
+using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using DTOs.DTOs;
+using DTOs.Mappers;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Usuarios;
 
 namespace LogicaAplicacion.CasosDeUso.Usuarios;
@@ -15,6 +17,10 @@ public class ObtenerUsuarioPorIdCU : IObtenerUsuarioPorId
 
     public UsuarioDTO Ejecutar(int id)
     {
-        throw new NotImplementedException();
+        var usuario = repositorio.FindByID(id);
+        if (usuario is null)
+            throw new DomainException("No se encontró el usuario solicitado.");
+
+        return UsuarioMapper.ToDTO(usuario);
     }
 }

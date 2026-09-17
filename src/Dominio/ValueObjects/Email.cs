@@ -5,13 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Dominio.ValueObjects;
 
+// CAMBIO: pasado de "class" con propiedad get-only a "record" con "init", igual a como lo hizo el profe en RedSocial
+
 [Owned]
-public class Email : IValidable
+public record Email : IValidable
 {
     private static readonly Regex FormatoValido = new(
         @"^[^@\s]+@[^@\s]+\.[^@\s]+$", RegexOptions.Compiled);
 
-    public string Direccion { get; }
+    public string Direccion { get; init; } = string.Empty;
 
     public Email(string direccion)
     {
@@ -21,7 +23,6 @@ public class Email : IValidable
 
     protected Email()
     {
-        Direccion = string.Empty;
     }
 
     public void Validar()
@@ -30,8 +31,8 @@ public class Email : IValidable
             throw new DomainException("El email ingresado no es válido.");
     }
 
-    public override bool Equals(object? obj) =>
-        obj is Email otro && Direccion.Equals(otro.Direccion, StringComparison.OrdinalIgnoreCase);
+    public virtual bool Equals(Email? otro) =>
+        otro is not null && Direccion.Equals(otro.Direccion, StringComparison.OrdinalIgnoreCase);
 
     public override int GetHashCode() => Direccion.ToLowerInvariant().GetHashCode();
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AccesoDatos.Migrations
 {
     [DbContext(typeof(HistoriasContext))]
-    [Migration("20260910115250_init")]
-    partial class init
+    [Migration("20260913182558_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,21 @@ namespace AccesoDatos.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("CategoriaHistoria", b =>
+                {
+                    b.Property<int>("CategoriasId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("HistoriaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CategoriasId", "HistoriaId");
+
+                    b.HasIndex("HistoriaId");
+
+                    b.ToTable("HistoriaCategorias", (string)null);
+                });
 
             modelBuilder.Entity("Dominio.Entidades.Auditoria", b =>
                 {
@@ -103,16 +118,11 @@ namespace AccesoDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("HistoriaId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("HistoriaId");
 
                     b.ToTable("Categorias");
                 });
@@ -128,9 +138,6 @@ namespace AccesoDatos.Migrations
                     b.Property<int>("CapituloInicialId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CapituloInicialId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("Estado")
                         .HasColumnType("int");
 
@@ -144,7 +151,7 @@ namespace AccesoDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CapituloInicialId1");
+                    b.HasIndex("CapituloInicialId");
 
                     b.ToTable("Historias");
                 });
@@ -194,7 +201,7 @@ namespace AccesoDatos.Migrations
                     b.Property<int>("CapituloDestinoId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("CapituloIntermedioId")
+                    b.Property<int>("CapituloIntermedioId")
                         .HasColumnType("int");
 
                     b.Property<string>("Texto")
@@ -251,6 +258,21 @@ namespace AccesoDatos.Migrations
                     b.HasDiscriminator().HasValue("CapituloIntermedio");
                 });
 
+            modelBuilder.Entity("CategoriaHistoria", b =>
+                {
+                    b.HasOne("Dominio.Entidades.Categoria", null)
+                        .WithMany()
+                        .HasForeignKey("CategoriasId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dominio.Entidades.Historia", null)
+                        .WithMany()
+                        .HasForeignKey("HistoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Dominio.Entidades.Auditoria", b =>
                 {
                     b.HasOne("Dominio.Entidades.Usuario", "Administrador")
@@ -285,18 +307,13 @@ namespace AccesoDatos.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Dominio.Entidades.Categoria", b =>
-                {
-                    b.HasOne("Dominio.Entidades.Historia", null)
-                        .WithMany("Categorias")
-                        .HasForeignKey("HistoriaId");
-                });
-
             modelBuilder.Entity("Dominio.Entidades.Historia", b =>
                 {
                     b.HasOne("Dominio.Entidades.CapituloIntermedio", "CapituloInicial")
                         .WithMany()
-                        .HasForeignKey("CapituloInicialId1");
+                        .HasForeignKey("CapituloInicialId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("CapituloInicial");
                 });
@@ -331,12 +348,14 @@ namespace AccesoDatos.Migrations
                     b.HasOne("Dominio.Entidades.Capitulo", "CapituloDestino")
                         .WithMany()
                         .HasForeignKey("CapituloDestinoId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("Dominio.Entidades.CapituloIntermedio", null)
                         .WithMany("Opciones")
-                        .HasForeignKey("CapituloIntermedioId");
+                        .HasForeignKey("CapituloIntermedioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("CapituloDestino");
                 });
@@ -347,6 +366,10 @@ namespace AccesoDatos.Migrations
                         {
                             b1.Property<int>("UsuarioId")
                                 .HasColumnType("int");
+
+                            b1.Property<string>("Direccion")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("UsuarioId");
 
@@ -360,6 +383,10 @@ namespace AccesoDatos.Migrations
                         {
                             b1.Property<int>("UsuarioId")
                                 .HasColumnType("int");
+
+                            b1.Property<string>("Valor")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
 
                             b1.HasKey("UsuarioId");
 
@@ -379,8 +406,6 @@ namespace AccesoDatos.Migrations
             modelBuilder.Entity("Dominio.Entidades.Historia", b =>
                 {
                     b.Navigation("Capitulos");
-
-                    b.Navigation("Categorias");
                 });
 
             modelBuilder.Entity("Dominio.Entidades.CapituloIntermedio", b =>

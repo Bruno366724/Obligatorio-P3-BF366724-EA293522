@@ -6,11 +6,24 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace AccesoDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Categorias",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Categorias", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Usuarios",
                 columns: table => new
@@ -18,7 +31,9 @@ namespace AccesoDatos.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NombreCompleto = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email_Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NombreUsuario = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password_Valor = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Rol = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -75,17 +90,17 @@ namespace AccesoDatos.Migrations
                     Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Sinopsis = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Estado = table.Column<int>(type: "int", nullable: false),
-                    CapituloInicialId = table.Column<int>(type: "int", nullable: false),
-                    CapituloInicialId1 = table.Column<int>(type: "int", nullable: true)
+                    CapituloInicialId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Historias", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Historias_Capitulos_CapituloInicialId1",
-                        column: x => x.CapituloInicialId1,
+                        name: "FK_Historias_Capitulos_CapituloInicialId",
+                        column: x => x.CapituloInicialId,
                         principalTable: "Capitulos",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -96,7 +111,7 @@ namespace AccesoDatos.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Texto = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CapituloDestinoId = table.Column<int>(type: "int", nullable: false),
-                    CapituloIntermedioId = table.Column<int>(type: "int", nullable: true)
+                    CapituloIntermedioId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -106,31 +121,37 @@ namespace AccesoDatos.Migrations
                         column: x => x.CapituloDestinoId,
                         principalTable: "Capitulos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Opciones_Capitulos_CapituloIntermedioId",
                         column: x => x.CapituloIntermedioId,
                         principalTable: "Capitulos",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Categorias",
+                name: "HistoriaCategorias",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    HistoriaId = table.Column<int>(type: "int", nullable: true)
+                    CategoriasId = table.Column<int>(type: "int", nullable: false),
+                    HistoriaId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categorias", x => x.Id);
+                    table.PrimaryKey("PK_HistoriaCategorias", x => new { x.CategoriasId, x.HistoriaId });
                     table.ForeignKey(
-                        name: "FK_Categorias_Historias_HistoriaId",
+                        name: "FK_HistoriaCategorias_Categorias_CategoriasId",
+                        column: x => x.CategoriasId,
+                        principalTable: "Categorias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_HistoriaCategorias_Historias_HistoriaId",
                         column: x => x.HistoriaId,
                         principalTable: "Historias",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -188,14 +209,14 @@ namespace AccesoDatos.Migrations
                 column: "HistoriaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Categorias_HistoriaId",
-                table: "Categorias",
+                name: "IX_HistoriaCategorias_HistoriaId",
+                table: "HistoriaCategorias",
                 column: "HistoriaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Historias_CapituloInicialId1",
+                name: "IX_Historias_CapituloInicialId",
                 table: "Historias",
-                column: "CapituloInicialId1");
+                column: "CapituloInicialId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lecturas_FinalAlcanzadoId",
@@ -250,20 +271,23 @@ namespace AccesoDatos.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Historias_Capitulos_CapituloInicialId1",
+                name: "FK_Historias_Capitulos_CapituloInicialId",
                 table: "Historias");
 
             migrationBuilder.DropTable(
                 name: "Auditorias");
 
             migrationBuilder.DropTable(
-                name: "Categorias");
+                name: "HistoriaCategorias");
 
             migrationBuilder.DropTable(
                 name: "Lecturas");
 
             migrationBuilder.DropTable(
                 name: "Opciones");
+
+            migrationBuilder.DropTable(
+                name: "Categorias");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");

@@ -1,41 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Dominio.Entidades;
 using Dominio.InterfacesRepositorios;
+using Microsoft.EntityFrameworkCore;
 
 namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 {
     public class RepositorioUsuarioEF : IRepositorioUsuario
     {
+        private readonly HistoriasContext contexto = new HistoriasContext();
+
         public void Add(Usuario obj)
         {
-            throw new NotImplementedException();
+            contexto.Usuarios.Add(obj);
+            contexto.SaveChanges();
         }
 
         public IEnumerable<Usuario> FindAll()
         {
-            throw new NotImplementedException();
+            return contexto.Usuarios.ToList();
         }
 
         public Usuario FindByID(int id)
         {
-            throw new NotImplementedException();
+            return contexto.Usuarios.FirstOrDefault(u => u.Id == id);
         }
 
         public Usuario FindByNombreUsuario(string nombreUsuario)
         {
-            throw new NotImplementedException();
+            return contexto.Usuarios.FirstOrDefault(u => u.NombreUsuario == nombreUsuario);
         }
 
         public void Remove(int id)
         {
-            throw new NotImplementedException();
+            var usuario = contexto.Usuarios.Find(id);
+            if (usuario is not null)
+            {
+                contexto.Usuarios.Remove(usuario);
+                contexto.SaveChanges();
+            }
         }
 
         public void Update(Usuario obj)
         {
-            throw new NotImplementedException();
+            contexto.Usuarios.Update(obj);
+            contexto.SaveChanges();
         }
     }
 }

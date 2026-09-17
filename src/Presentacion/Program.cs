@@ -1,4 +1,4 @@
-using AccesoDatos.Repositorios;
+using AccesoDatos.RepositorioEntityFramework.Repositorios;
 using Dominio.InterfacesRepositorios;
 
 using LogicaAplicacion.CasosDeUso.Auditorias;
@@ -17,17 +17,26 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// NUEVO (RF01): habilita Session. HttpContext.Session guarda datos del lado del
+// servidor (memoria, acá con AddDistributedMemoryCache); al navegador solo le
+// llega una cookie con un ID de sesión, sin datos del usuario adentro.
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+
 //INICIALIZAMOS LOS REPOSITORIOS
-builder.Services.AddScoped<IRepositorioUsuario, RepositorioUsuario>();
-builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoria>();
-builder.Services.AddScoped<IRepositorioHistoria, RepositorioHistoria>();
-builder.Services.AddScoped<IRepositorioLectura, RepositorioLectura>();
-builder.Services.AddScoped<IRepositorioAuditoria, RepositorioAuditoria>();
+// CAMBIO: apuntan a los repos de Entity Framework (antes quedaban colgados
+// de los repos en memoria y nunca se llegaba a tocar la base de datos).
+builder.Services.AddScoped<IRepositorioUsuario, RepositorioUsuarioEF>();
+builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoriaEF>();
+builder.Services.AddScoped<IRepositorioHistoria, RepositorioHistoriaEF>();
+builder.Services.AddScoped<IRepositorioLectura, RepositorioLecturaEF>();
+builder.Services.AddScoped<IRepositorioAuditoria, RepositorioAuditoriaEF>();
 
 //INICIALIZAMOS LOS CASOS DE USO - USUARIOS
 builder.Services.AddScoped<IAgregarUsuario, AgregarUsuarioCU>();
 builder.Services.AddScoped<IObtenerUsuarioPorId, ObtenerUsuarioPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodosUsuarios, EncontrarTodosUsuariosCU>();
+builder.Services.AddScoped<IIniciarSesion, IniciarSesionCU>(); // NUEVO (RF01)
 
 //INICIALIZAMOS LOS CASOS DE USO - CATEGORIAS
 builder.Services.AddScoped<IAgregarCategoria, AgregarCategoriaCU>();
@@ -61,6 +70,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+
+// NUEVO (RF01): UseSession tiene que ir antes de cualquier código que lea o
+// escriba HttpContext.Session (en nuestro caso, antes de que se ejecuten los
+// controllers).
+app.UseSession();
 
 app.UseAuthorization();
 
