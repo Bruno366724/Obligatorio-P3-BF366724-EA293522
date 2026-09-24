@@ -1,91 +1,236 @@
+/* =====================================================================
+   Tema oscuro, mate y monocromático — Obligatorio P3
+   Ruta: src/Presentacion/wwwroot/css/site.css
+   Base: Bootstrap 5.3. Se pisan sus variables en vez de reescribir todo.
+   Generado con IA (Claude) — documentar en el apartado de uso de IA.
+   ===================================================================== */
+
+:root {
+    /* Paleta base */
+    --black: #000000ff;
+    --ink-black: #0c1821ff;
+    --prussian-blue: #1b2a41ff;
+    --charcoal-blue: #324a5fff;
+    --lavender: #ccc9dcff;
+    /* Roles: lo que usa el resto del archivo */
+    --fondo: var(--ink-black);
+    --superficie: var(--prussian-blue);
+    --borde: var(--charcoal-blue);
+    --texto: var(--lavender);
+    /* Tonos derivados (mezclas de la misma paleta, siguen siendo monocromos) */
+    --texto-suave: color-mix(in srgb, var(--lavender) 75%, var(--ink-black));
+    --borde-campo: color-mix(in srgb, var(--lavender) 50%, var(--ink-black));
+    color-scheme: dark; /* scrollbars y listas desplegables nativas oscuras */
+    /* Variables de Bootstrap */
+    --bs-body-bg: var(--fondo);
+    --bs-body-color: var(--texto);
+    --bs-secondary-color: var(--texto-suave);
+    --bs-border-color: var(--borde);
+}
+
+/* ---------- Base (lo que ya traía la plantilla para el footer) ---------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    html {
+        font-size: 16px;
+    }
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    line-height: 1.6;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+h1, h2, h3 {
+    font-weight: 600;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+a {
+    color: var(--texto);
+    text-underline-offset: 3px;
+    text-decoration-color: var(--borde-campo);
 }
 
-:root {
-  --gris-900: #212529;
-  --gris-800: #343a40;
-  --gris-700: #495057;
-  --gris-500: #868e96;
-  --gris-300: #ced4da;
-  --gris-200: #e9ecef;
-  --gris-100: #f4f5f6;
+    a:hover {
+        text-decoration-color: var(--lavender);
+    }
+
+:focus-visible {
+    outline: 2px solid var(--lavender);
+    outline-offset: 2px;
 }
 
-body {
-  background-color: var(--gris-100);
-  color: var(--gris-900);
+hr {
+    color: var(--borde);
+    opacity: 1;
 }
 
-.navbar {
-  background-color: #ffffff !important;
-  border-bottom: 1px solid var(--gris-300) !important;
+dt {
+    color: var(--texto-suave);
+    font-weight: 500;
 }
 
-.navbar-brand {
-  color: var(--gris-900) !important;
-  font-weight: 600;
+/* ---------- Navbar y footer ---------- */
+/* !important porque el Layout usa bg-white / text-dark (que son !important en Bootstrap) */
+header .navbar {
+    background-color: var(--black) !important;
+    border-bottom: 1px solid var(--borde) !important;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+    color: var(--texto) !important;
+}
+
+    .navbar .nav-link:hover {
+        background-color: var(--superficie);
+        border-radius: 4px;
+    }
+
+.navbar .navbar-text {
+    color: var(--texto-suave) !important;
+}
+
+.navbar-toggler {
+    border-color: var(--borde-campo);
+}
+
+.navbar-toggler-icon {
+    filter: invert(1);
+}
+
+.footer {
+    background-color: var(--fondo);
+}
+
+footer a {
+    color: var(--texto-suave) !important;
+}
+
+/* ---------- Tarjetas ---------- */
+.card {
+    --bs-card-bg: var(--superficie);
+    --bs-card-color: var(--texto);
+    --bs-card-border-color: var(--borde);
+    --bs-card-border-radius: 6px;
+    box-shadow: none;
+}
+
+/* ---------- Tablas ---------- */
+.table {
+    --bs-table-color: var(--texto);
+    --bs-table-bg: transparent;
+    --bs-table-border-color: var(--borde);
+}
+
+    .table > thead > tr > th {
+        background-color: var(--black);
+        font-weight: 600;
+    }
+
+    .table > tbody > tr:hover > * {
+        background-color: color-mix(in srgb, var(--borde) 40%, transparent);
+    }
+
+/* ---------- Formularios ---------- */
+/* Bootstrap 5 ya no trae .form-group, pero las vistas lo usan */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+    .form-group > label {
+        margin-bottom: .35rem;
+    }
+
+.form-control {
+    background-color: var(--fondo);
+    border: 1px solid var(--borde-campo);
+    color: var(--texto);
+}
+
+    .form-control::placeholder {
+        color: var(--texto-suave);
+    }
+
+    .form-control:focus {
+        background-color: var(--fondo);
+        border-color: var(--lavender);
+        color: var(--texto);
+        box-shadow: 0 0 0 3px var(--borde);
+    }
+
+.form-check-input {
+    background-color: var(--fondo);
+    border-color: var(--borde-campo);
+}
+
+    .form-check-input:checked {
+        background-color: var(--borde);
+        border-color: var(--lavender);
+    }
+
+    .form-check-input:focus {
+        border-color: var(--lavender);
+        box-shadow: 0 0 0 3px var(--borde);
+    }
+
+/* Errores: sin rojo (paleta monocroma). Se distinguen por caja y borde lateral. */
+.text-danger {
+    color: var(--texto) !important;
+}
+
+.validation-summary-valid {
+    display: none;
+}
+
+.validation-summary-errors {
+    background-color: var(--black);
+    border-left: 4px solid var(--lavender);
+    padding: .75rem 1rem;
+    margin-bottom: 1rem;
+}
+
+    .validation-summary-errors ul {
+        margin: 0;
+        padding-left: 1.1rem;
+    }
+
+/* ---------- Botones ---------- */
+.btn {
+    --bs-btn-border-radius: 4px;
 }
 
 .btn-primary {
-  background-color: var(--gris-700);
-  border-color: var(--gris-700);
-}
-
-.btn-primary:hover, .btn-primary:focus {
-  background-color: var(--gris-800);
-  border-color: var(--gris-800);
+    --bs-btn-color: var(--lavender);
+    --bs-btn-bg: var(--charcoal-blue);
+    --bs-btn-border-color: var(--charcoal-blue);
+    --bs-btn-hover-color: var(--ink-black);
+    --bs-btn-hover-bg: var(--lavender);
+    --bs-btn-hover-border-color: var(--lavender);
+    --bs-btn-active-color: var(--ink-black);
+    --bs-btn-active-bg: var(--lavender);
+    --bs-btn-active-border-color: var(--lavender);
+    --bs-btn-focus-shadow-rgb: 204, 201, 220;
+    --bs-btn-disabled-color: var(--lavender);
+    --bs-btn-disabled-bg: var(--charcoal-blue);
+    --bs-btn-disabled-border-color: var(--charcoal-blue);
 }
 
 .btn-outline-secondary {
-  color: var(--gris-700);
-  border-color: var(--gris-500);
-}
-
-.table thead {
-  background-color: var(--gris-200);
-}
-
-.card {
-  background-color: #ffffff;
-  border: 1px solid var(--gris-300);
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
-}
-
-h1 {
-  color: var(--gris-800);
-}
-
-footer.footer {
-  background-color: #ffffff;
-  color: var(--gris-500);
+    --bs-btn-color: var(--texto);
+    --bs-btn-border-color: var(--borde-campo);
+    --bs-btn-hover-color: var(--texto);
+    --bs-btn-hover-bg: var(--borde);
+    --bs-btn-hover-border-color: var(--borde-campo);
+    --bs-btn-active-color: var(--texto);
+    --bs-btn-active-bg: var(--borde);
+    --bs-btn-active-border-color: var(--borde-campo);
+    --bs-btn-focus-shadow-rgb: 204, 201, 220;
+    --bs-btn-disabled-color: var(--texto-suave);
+    --bs-btn-disabled-border-color: var(--borde);
 }
