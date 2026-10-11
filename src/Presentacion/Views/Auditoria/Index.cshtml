@@ -1,0 +1,72 @@
+@model List<DTOs.DTOs.AuditoriaDTO>
+
+@{
+    ViewData["Title"] = "Auditoría";
+    List<DTOs.DTOs.HistoriaDTO> historias = ViewBag.Historias;
+    List<DTOs.DTOs.UsuarioDTO> administradores = ViewBag.Administradores;
+    int? historiaIdSeleccionada = ViewBag.HistoriaIdSeleccionada;
+    int? administradorIdSeleccionado = ViewBag.AdministradorIdSeleccionado;
+}
+
+<h1>Auditoría</h1>
+
+<div class="card p-3 mb-3">
+    <form asp-action="Index" method="get" class="row g-2 align-items-end">
+        <div class="col-auto">
+            <label class="form-label">Historia</label>
+            <select name="historiaId" class="form-select" onchange="this.form.submit()">
+                <option value="">Todas</option>
+@foreach (DTOs.DTOs.HistoriaDTO historia in historias)
+{
+                <option value="@historia.Id" selected="@(historia.Id == historiaIdSeleccionada)">@historia.Titulo</option>
+}
+            </select>
+        </div>
+        <div class="col-auto">
+            <label class="form-label">Administrador</label>
+            <select name="administradorId" class="form-select" onchange="this.form.submit()">
+                <option value="">Todos</option>
+@foreach (DTOs.DTOs.UsuarioDTO administrador in administradores)
+{
+                <option value="@administrador.Id" selected="@(administrador.Id == administradorIdSeleccionado)">@administrador.NombreUsuario</option>
+}
+            </select>
+        </div>
+        <div class="col-auto">
+            <a asp-action="Index" class="btn btn-outline-secondary">Limpiar filtro</a>
+        </div>
+    </form>
+</div>
+
+<div class="card p-3">
+@if (Model.Count == 0)
+{
+    <p class="text-muted mb-0">No hay auditorías registradas que coincidan con el filtro.</p>
+}
+else
+{
+    <table class="table mb-0">
+        <thead>
+            <tr>
+                <th>Fecha</th>
+                <th>Acción</th>
+                <th>Administrador</th>
+                <th>Historia</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+@foreach (DTOs.DTOs.AuditoriaDTO auditoria in Model)
+{
+            <tr>
+                <td>@auditoria.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@auditoria.Accion</td>
+                <td>@administradores.FirstOrDefault(a => a.Id == auditoria.AdministradorId)?.NombreUsuario</td>
+                <td>@historias.FirstOrDefault(h => h.Id == auditoria.HistoriaId)?.Titulo</td>
+                <td><a asp-action="Details" asp-route-id="@auditoria.Id">Detalles</a></td>
+            </tr>
+}
+        </tbody>
+    </table>
+}
+</div>

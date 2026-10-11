@@ -1,5 +1,6 @@
 using Dominio.InterfacesRepositorios;
 using DTOs.DTOs;
+using DTOs.Mappers;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Auditorias;
 
 namespace LogicaAplicacion.CasosDeUso.Auditorias;
@@ -15,6 +16,8 @@ public class EncontrarTodasAuditoriasCU : IEncontrarTodasAuditorias
 
     public List<AuditoriaDTO> Ejecutar()
     {
-        throw new NotImplementedException();
+        return repositorio.FindAll()
+            .Select(auditoria => AuditoriaMapper.ToDTO(auditoria))
+            .ToList();
     }
 }

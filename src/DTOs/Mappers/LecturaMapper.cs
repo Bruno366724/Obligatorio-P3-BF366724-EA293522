@@ -7,11 +7,29 @@ public static class LecturaMapper
 {
     public static Lectura FromDTO(LecturaDTO dto)
     {
-        throw new NotImplementedException();
+        return new Lectura
+        {
+            Id = dto.Id,
+            UsuarioId = dto.UsuarioId,
+            HistoriaId = dto.HistoriaId,
+            CapituloActualId = dto.CapituloActualId,
+            FechaInicio = dto.FechaInicio,
+            FechaFin = dto.FechaFin,
+            FinalAlcanzadoId = dto.FinalAlcanzadoId
+        };
     }
 
     public static LecturaDTO ToDTO(Lectura lectura)
     {
-        throw new NotImplementedException();
+        return new LecturaDTO
+        {
+            Id = lectura.Id,
+            UsuarioId = lectura.UsuarioId,
+            HistoriaId = lectura.HistoriaId,
+            CapituloActualId = lectura.CapituloActualId,
+            FechaInicio = lectura.FechaInicio,
+            FechaFin = lectura.FechaFin,
+            FinalAlcanzadoId = lectura.FinalAlcanzadoId
+        };
     }
 }

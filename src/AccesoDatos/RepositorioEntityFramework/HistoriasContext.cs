@@ -48,6 +48,19 @@ namespace AccesoDatos.RepositorioEntityFramework
                 .WithMany()
                 .HasForeignKey(o => o.CapituloDestinoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // Lectura referencia Capitulo dos veces (CapituloActual y FinalAlcanzado).
+            modelBuilder.Entity<Lectura>()
+                .HasOne(l => l.CapituloActual)
+                .WithMany()
+                .HasForeignKey(l => l.CapituloActualId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Lectura>()
+                .HasOne(l => l.FinalAlcanzado)
+                .WithMany()
+                .HasForeignKey(l => l.FinalAlcanzadoId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

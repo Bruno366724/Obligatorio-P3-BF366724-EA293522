@@ -38,6 +38,7 @@ builder.Services.AddScoped<IAgregarHistoria, AgregarHistoriaCU>();
 builder.Services.AddScoped<IObtenerHistoriaPorId, ObtenerHistoriaPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodasHistorias, EncontrarTodasHistoriasCU>();
 builder.Services.AddScoped<IEditarHistoria, EditarHistoriaCU>();
+builder.Services.AddScoped<IAgregarCapitulo, AgregarCapituloCU>();
 
 builder.Services.AddScoped<IAgregarLectura, AgregarLecturaCU>();
 builder.Services.AddScoped<IObtenerLecturaPorId, ObtenerLecturaPorIdCU>();
@@ -46,6 +47,8 @@ builder.Services.AddScoped<IEncontrarTodasLecturas, EncontrarTodasLecturasCU>();
 builder.Services.AddScoped<IAgregarAuditoria, AgregarAuditoriaCU>();
 builder.Services.AddScoped<IObtenerAuditoriaPorId, ObtenerAuditoriaPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodasAuditorias, EncontrarTodasAuditoriasCU>();
+builder.Services.AddScoped<IEncontrarAuditoriasPorHistoria, EncontrarAuditoriasPorHistoriaCU>();
+builder.Services.AddScoped<IEncontrarAuditoriasPorAdministrador, EncontrarAuditoriasPorAdministradorCU>();
 
 WebApplication app = builder.Build();
 

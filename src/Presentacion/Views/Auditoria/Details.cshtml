@@ -1,0 +1,40 @@
+@model DTOs.DTOs.AuditoriaDTO
+
+@{
+    ViewData["Title"] = "Detalle de auditoría";
+    List<DTOs.DTOs.HistoriaDTO> historias = ViewBag.Historias;
+    List<DTOs.DTOs.UsuarioDTO> administradores = ViewBag.Administradores;
+
+    DTOs.DTOs.HistoriaDTO? historia = historias.FirstOrDefault(h => h.Id == Model.HistoriaId);
+    string? capituloTitulo = Model.CapituloId.HasValue
+        ? historia?.Capitulos.FirstOrDefault(c => c.Id == Model.CapituloId)?.Titulo
+        : null;
+}
+
+<h1>Detalle de auditoría</h1>
+
+<div class="card p-4">
+<dl class="row">
+    <dt class="col-sm-2">Fecha</dt>
+    <dd class="col-sm-10">@Model.Fecha.ToString("dd/MM/yyyy HH:mm")</dd>
+
+    <dt class="col-sm-2">Acción</dt>
+    <dd class="col-sm-10">@Model.Accion</dd>
+
+    <dt class="col-sm-2">Administrador</dt>
+    <dd class="col-sm-10">@administradores.FirstOrDefault(a => a.Id == Model.AdministradorId)?.NombreUsuario</dd>
+
+    <dt class="col-sm-2">Historia</dt>
+    <dd class="col-sm-10">@historia?.Titulo</dd>
+
+@if (capituloTitulo is not null)
+{
+    <dt class="col-sm-2">Capítulo</dt>
+    <dd class="col-sm-10">@capituloTitulo</dd>
+}
+</dl>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+</div>

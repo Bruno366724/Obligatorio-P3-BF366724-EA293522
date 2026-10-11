@@ -161,6 +161,9 @@ namespace AccesoDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CapituloActualId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("FechaFin")
                         .HasColumnType("datetime2");
 
@@ -177,6 +180,8 @@ namespace AccesoDatos.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CapituloActualId");
 
                     b.HasIndex("FinalAlcanzadoId");
 
@@ -316,9 +321,16 @@ namespace AccesoDatos.Migrations
 
             modelBuilder.Entity("Dominio.Entidades.Lectura", b =>
                 {
+                    b.HasOne("Dominio.Entidades.Capitulo", "CapituloActual")
+                        .WithMany()
+                        .HasForeignKey("CapituloActualId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Dominio.Entidades.CapituloFinal", "FinalAlcanzado")
                         .WithMany()
-                        .HasForeignKey("FinalAlcanzadoId");
+                        .HasForeignKey("FinalAlcanzadoId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Dominio.Entidades.Historia", "Historia")
                         .WithMany()
@@ -331,6 +343,8 @@ namespace AccesoDatos.Migrations
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("CapituloActual");
 
                     b.Navigation("FinalAlcanzado");
 

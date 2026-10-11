@@ -1,0 +1,63 @@
+@{
+    ViewData["Title"] = "Agregar capítulo";
+    int historiaId = ViewBag.HistoriaId;
+    int capituloAntecedenteId = ViewBag.CapituloAntecedenteId;
+    string historiaTitulo = ViewBag.HistoriaTitulo;
+    string capituloAntecedenteTitulo = ViewBag.CapituloAntecedenteTitulo;
+}
+
+<div class="d-flex justify-content-center mt-4">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+        <div class="card p-4">
+            <h1 class="h3 mb-1 text-center">Agregar capítulo</h1>
+            <p class="text-muted text-center mb-4">
+                Historia: <strong>@historiaTitulo</strong><br />
+                A continuación de: <strong>@capituloAntecedenteTitulo</strong>
+            </p>
+            <form asp-action="AgregarCapitulo" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <input type="hidden" name="historiaId" value="@historiaId" />
+                <input type="hidden" name="capituloAntecedenteId" value="@capituloAntecedenteId" />
+
+                <div class="form-group">
+                    <label>Tipo de capítulo</label>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" name="esFinal" id="tipoIntermedio" value="false" checked />
+                        <label class="form-check-label" for="tipoIntermedio">Intermedio</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="radio" class="form-check-input" name="esFinal" id="tipoFinal" value="true" />
+                        <label class="form-check-label" for="tipoFinal">Final</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="titulo">Título del capítulo</label>
+                    <input name="titulo" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="texto">Texto del capítulo</label>
+                    <textarea name="texto" class="form-control"></textarea>
+                </div>
+
+                <hr />
+                <p class="text-muted">
+                    Al capítulo "@capituloAntecedenteTitulo" se le va a crear una opción con este texto,
+                    que lleva al capítulo nuevo.
+                </p>
+                <div class="form-group">
+                    <label for="textoOpcion">Texto de la opción</label>
+                    <input name="textoOpcion" class="form-control" />
+                </div>
+
+                <div class="form-group mt-3">
+                    <input type="submit" value="Agregar" class="btn btn-primary w-100" />
+                </div>
+            </form>
+        </div>
+        <div class="text-center mt-3">
+            <a asp-action="Details" asp-route-id="@historiaId">Volver a la historia</a>
+        </div>
+    </div>
+</div>

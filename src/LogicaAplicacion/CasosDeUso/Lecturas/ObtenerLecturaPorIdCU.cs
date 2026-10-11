@@ -1,5 +1,8 @@
+using Dominio.Entidades;
+using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using DTOs.DTOs;
+using DTOs.Mappers;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Lecturas;
 
 namespace LogicaAplicacion.CasosDeUso.Lecturas;
@@ -15,6 +18,10 @@ public class ObtenerLecturaPorIdCU : IObtenerLecturaPorId
 
     public LecturaDTO Ejecutar(int id)
     {
-        throw new NotImplementedException();
+        Lectura lectura = repositorio.FindByID(id);
+        if (lectura is null)
+            throw new LecturaException("No se encontró la lectura solicitada.");
+
+        return LecturaMapper.ToDTO(lectura);
     }
 }

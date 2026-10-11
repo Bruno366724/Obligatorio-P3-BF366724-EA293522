@@ -1,13 +1,6 @@
-// Esqueleto de la Web API de Lectura (RF06+). Todavia no tiene JWT ni [Authorize] en
-// ningun lado -- el profe recien empezo a mostrar Web API en RedSocialM3C (commit
-// "Jugamos con webapi", 5/10) y ahi tampoco hay JWT todavia. La idea es tener ya armada
-// la base (DI, Swagger, controllers de solo lectura) para poder enchufar la autenticacion
-// encima apenas se de el tema en clase, en vez de arrancar de cero.
-//
-// Por ahora vive en la misma solucion (Obligatorio.slnx) junto con Presentacion (la app
-// de Administracion). El enunciado pide dos soluciones .NET separadas para el entregable
-// final -- separar esto en su propia solucion queda pendiente, no es parte de este paso.
+// Web API de Lectura (RF06+): login con JWT, historias, lecturas.
 
+using System.Text;
 using AccesoDatos.RepositorioEntityFramework.Repositorios;
 using Dominio.InterfacesRepositorios;
 
@@ -21,16 +14,56 @@ using LogicaAplicacion.InterfacesDeCasoDeUso.Categorias;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Historias;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Lecturas;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Usuarios;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
+using WebApiLectura.Servicios;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddSwaggerGen();
 
-// Mismos repositorios y casos de uso que Presentacion (Program.cs) -- es el mismo
-// agregado de Dominio, solo cambia quien lo consume. Lectura y Auditoria se registran
-// igual aunque sus casos de uso todavia sean en su mayoria stubs NotImplementedException
-// (ver CLAUDE.md); no hay controller que los use por ahora, asi que no se llegan a invocar.
+// Esquema de seguridad para que Swagger muestre el boton "Authorize" con JWT.
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Description = "Pegar solo el token, sin el prefijo \"Bearer \" -- Swagger lo agrega solo."
+    });
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = []
+    });
+});
+
+// Autenticacion por JWT. Clave/emisor/audiencia salen de appsettings.json ("Jwt").
+IConfigurationSection configJwt = builder.Configuration.GetSection("Jwt");
+string claveJwt = configJwt["Clave"]!;
+
+builder.Services
+    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidIssuer = configJwt["Emisor"],
+            ValidateAudience = true,
+            ValidAudience = configJwt["Audiencia"],
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(claveJwt)),
+            ValidateLifetime = true
+        };
+    });
+
+builder.Services.AddAuthorization();
+builder.Services.AddScoped<GeneradorTokenJwt>();
 
 builder.Services.AddScoped<IRepositorioUsuario, RepositorioUsuarioEF>();
 builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoriaEF>();
@@ -42,6 +75,7 @@ builder.Services.AddScoped<IAgregarUsuario, AgregarUsuarioCU>();
 builder.Services.AddScoped<IObtenerUsuarioPorId, ObtenerUsuarioPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodosUsuarios, EncontrarTodosUsuariosCU>();
 builder.Services.AddScoped<IIniciarSesion, IniciarSesionCU>();
+builder.Services.AddScoped<IIniciarSesionLectura, IniciarSesionLecturaCU>();
 
 builder.Services.AddScoped<IAgregarCategoria, AgregarCategoriaCU>();
 builder.Services.AddScoped<IObtenerCategoriaPorId, ObtenerCategoriaPorIdCU>();
@@ -51,10 +85,14 @@ builder.Services.AddScoped<IAgregarHistoria, AgregarHistoriaCU>();
 builder.Services.AddScoped<IObtenerHistoriaPorId, ObtenerHistoriaPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodasHistorias, EncontrarTodasHistoriasCU>();
 builder.Services.AddScoped<IEditarHistoria, EditarHistoriaCU>();
+builder.Services.AddScoped<IEncontrarHistoriasPublicadas, EncontrarHistoriasPublicadasCU>();
 
 builder.Services.AddScoped<IAgregarLectura, AgregarLecturaCU>();
 builder.Services.AddScoped<IObtenerLecturaPorId, ObtenerLecturaPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodasLecturas, EncontrarTodasLecturasCU>();
+builder.Services.AddScoped<IIniciarLectura, IniciarLecturaCU>();
+builder.Services.AddScoped<IAvanzarLectura, AvanzarLecturaCU>();
+builder.Services.AddScoped<IEncontrarHistorialLecturas, EncontrarHistorialLecturasCU>();
 
 builder.Services.AddScoped<IAgregarAuditoria, AgregarAuditoriaCU>();
 builder.Services.AddScoped<IObtenerAuditoriaPorId, ObtenerAuditoriaPorIdCU>();
@@ -70,8 +108,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Todavia no hay app.UseAuthentication() -- no hay JWT configurado. Cuando se agregue,
-// va antes de UseAuthorization().
+// UseAuthentication siempre antes de UseAuthorization.
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

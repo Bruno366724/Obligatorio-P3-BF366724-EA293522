@@ -11,9 +11,11 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         private IQueryable<Historia> ConDetalle()
         {
+            // Include por string: Opciones solo existe en CapituloIntermedio (TPH).
             return contexto.Historias
                 .Include(h => h.Categorias)
                 .Include(h => h.Capitulos)
+                .Include("Capitulos.Opciones")
                 .Include(h => h.CapituloInicial);
         }
 
@@ -27,9 +29,7 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
         {
             obj.Categorias = ResolverCategorias(obj.Categorias);
 
-            // Historia -> CapituloInicial y Capitulo -> Historia se necesitan mutuamente
-            // (ciclo de FKs). Se guarda en dos pasos: primero Historia + Capitulos sin el
-            // link al inicial, y recién con los Ids ya asignados se completa ese link.
+            // Guardado en dos pasos por el ciclo de FKs Historia<->CapituloInicial.
             CapituloIntermedio? capituloInicial = obj.CapituloInicial;
             obj.CapituloInicial = null;
 

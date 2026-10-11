@@ -1,5 +1,7 @@
+using Dominio.Entidades;
 using Dominio.InterfacesRepositorios;
 using DTOs.DTOs;
+using DTOs.Mappers;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Lecturas;
 
 namespace LogicaAplicacion.CasosDeUso.Lecturas;
@@ -15,6 +17,8 @@ public class AgregarLecturaCU : IAgregarLectura
 
     public void Ejecutar(LecturaDTO dto)
     {
-        throw new NotImplementedException();
+        Lectura lectura = LecturaMapper.FromDTO(dto);
+        lectura.Validar();
+        repositorio.Add(lectura);
     }
 }

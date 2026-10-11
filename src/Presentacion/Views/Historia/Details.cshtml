@@ -28,13 +28,13 @@
                 {
                     <strong>(inicial)</strong>
                 }
-                @* Solo los capítulos intermedios pueden tener un capítulo siguiente (RF04). *@
+                @* Solo los intermedios pueden tener un capítulo siguiente. *@
                 @if (capitulo is DTOs.DTOs.CapituloIntermedioDTO)
                 {
-                    <button type="button" class="btn btn-sm btn-outline-secondary ms-2" disabled
-                            title="Disponible cuando implementemos RF04">
+                    <a asp-action="AgregarCapitulo" asp-route-historiaId="@Model.Id" asp-route-capituloAntecedenteId="@capitulo.Id"
+                       class="btn btn-sm btn-outline-secondary ms-2">
                         Agregar capítulo siguiente
-                    </button>
+                    </a>
                 }
             </li>
 }

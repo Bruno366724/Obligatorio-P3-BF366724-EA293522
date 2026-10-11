@@ -4,5 +4,5 @@ namespace LogicaAplicacion.InterfacesDeCasoDeUso.Historias;
 
 public interface IEditarHistoria
 {
-    void Ejecutar(HistoriaDTO dto);
+    void Ejecutar(HistoriaDTO dto, int administradorId);
 }

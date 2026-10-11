@@ -1,5 +1,6 @@
 using Dominio.InterfacesRepositorios;
 using DTOs.DTOs;
+using DTOs.Mappers;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Lecturas;
 
 namespace LogicaAplicacion.CasosDeUso.Lecturas;
@@ -15,6 +16,8 @@ public class EncontrarTodasLecturasCU : IEncontrarTodasLecturas
 
     public List<LecturaDTO> Ejecutar()
     {
-        throw new NotImplementedException();
+        return repositorio.FindAll()
+            .Select(lectura => LecturaMapper.ToDTO(lectura))
+            .ToList();
     }
 }

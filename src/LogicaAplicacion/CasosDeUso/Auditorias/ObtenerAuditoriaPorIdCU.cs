@@ -1,5 +1,8 @@
+using Dominio.Entidades;
+using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using DTOs.DTOs;
+using DTOs.Mappers;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Auditorias;
 
 namespace LogicaAplicacion.CasosDeUso.Auditorias;
@@ -15,6 +18,10 @@ public class ObtenerAuditoriaPorIdCU : IObtenerAuditoriaPorId
 
     public AuditoriaDTO Ejecutar(int id)
     {
-        throw new NotImplementedException();
+        Auditoria auditoria = repositorio.FindByID(id);
+        if (auditoria is null)
+            throw new AuditoriaException("No se encontró la auditoría solicitada.");
+
+        return AuditoriaMapper.ToDTO(auditoria);
     }
 }

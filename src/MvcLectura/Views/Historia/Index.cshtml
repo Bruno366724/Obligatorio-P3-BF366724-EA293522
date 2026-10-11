@@ -1,0 +1,50 @@
+@model List<DTOs.DTOs.HistoriaDTO>
+
+@{
+    ViewData["Title"] = "Historias";
+    List<DTOs.DTOs.CategoriaDTO> categorias = ViewBag.Categorias;
+    int? categoriaIdSeleccionada = ViewBag.CategoriaIdSeleccionada;
+}
+
+<h1>Historias</h1>
+
+<div class="card p-3 mb-3">
+    <form asp-action="Index" method="get" class="row g-2 align-items-end">
+        <div class="col-auto">
+            <label class="form-label">Categoría</label>
+            <select name="categoriaId" class="form-select" onchange="this.form.submit()">
+                <option value="">Todas</option>
+@foreach (DTOs.DTOs.CategoriaDTO categoria in categorias)
+{
+                <option value="@categoria.Id" selected="@(categoria.Id == categoriaIdSeleccionada)">@categoria.Nombre</option>
+}
+            </select>
+        </div>
+    </form>
+</div>
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted">No hay historias publicadas que coincidan con el filtro.</p>
+}
+else
+{
+    <div class="row g-3">
+@foreach (DTOs.DTOs.HistoriaDTO historia in Model)
+{
+        <div class="col-12 col-md-6 col-lg-4">
+            <div class="card p-3 h-100 d-flex flex-column">
+                <h2 class="h5">@historia.Titulo</h2>
+                <p class="text-muted flex-grow-1">@historia.Sinopsis</p>
+                <p class="mb-2">
+@foreach (DTOs.DTOs.CategoriaDTO categoria in historia.Categorias)
+{
+                    <span class="badge text-bg-secondary me-1">@categoria.Nombre</span>
+}
+                </p>
+                <a asp-action="Details" asp-route-id="@historia.Id" class="btn btn-primary">Ver</a>
+            </div>
+        </div>
+}
+    </div>
+}

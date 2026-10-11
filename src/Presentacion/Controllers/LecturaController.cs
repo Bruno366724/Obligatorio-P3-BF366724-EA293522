@@ -2,9 +2,11 @@ using DTOs.DTOs;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Lecturas;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presentacion.Filtros;
 
 namespace Presentacion.Controllers;
 
+[RequiereSesion]
 public class LecturaController : Controller
 {
     private readonly IEncontrarTodasLecturas encontrarTodasLecturas;

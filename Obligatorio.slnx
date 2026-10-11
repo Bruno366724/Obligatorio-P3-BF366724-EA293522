@@ -4,6 +4,7 @@
     <Project Path="src/Dominio/Dominio.csproj" />
     <Project Path="src/DTOs/DTOs.csproj" />
     <Project Path="src/LogicaAplicacion/LogicaAplicacion.csproj" />
+    <Project Path="src/MvcLectura/MvcLectura.csproj" />
     <Project Path="src/Presentacion/Presentacion.csproj" />
     <Project Path="src/WebApiLectura/WebApiLectura.csproj" />
   </Folder>

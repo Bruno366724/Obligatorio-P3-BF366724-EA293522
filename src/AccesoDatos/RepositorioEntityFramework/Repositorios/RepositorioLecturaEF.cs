@@ -10,9 +10,13 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         private IQueryable<Lectura> ConDetalle()
         {
+            // Includes por string: Opciones/CapituloDestino solo existen en CapituloIntermedio (TPH).
             return contexto.Lecturas
                 .Include(l => l.Usuario)
                 .Include(l => l.Historia)
+                .Include(l => l.CapituloActual)
+                .Include("CapituloActual.Opciones")
+                .Include("CapituloActual.Opciones.CapituloDestino")
                 .Include(l => l.FinalAlcanzado);
         }
 

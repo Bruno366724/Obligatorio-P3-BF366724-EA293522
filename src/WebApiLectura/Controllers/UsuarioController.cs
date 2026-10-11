@@ -1,16 +1,15 @@
 using Dominio.Excepciones;
 using DTOs.DTOs;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Usuarios;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiLectura.Controllers;
 
-// Solo lectura por ahora, igual que lo que el profe mostro en ApiWeb/UsuarioController
-// de RedSocialM3C (ahi tambien solo el Get() esta wireado a un caso de uso real).
-// No expone Password en la respuesta -- UsuarioDTO lo trae en texto plano (se usa para
-// el alta en RF02), pero no tiene sentido devolverlo en un endpoint de lectura.
+// Listar/ver usuarios: restringido a Administrador.
 [Route("api/[controller]")]
 [ApiController]
+[Authorize(Roles = "Administrador")]
 public class UsuarioController : ControllerBase
 {
     private readonly IEncontrarTodosUsuarios encontrarTodosUsuarios;

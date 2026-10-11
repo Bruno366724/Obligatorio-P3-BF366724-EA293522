@@ -3,6 +3,7 @@ using DTOs.DTOs;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Usuarios;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presentacion.Filtros;
 
 namespace Presentacion.Controllers;
 
@@ -57,21 +58,25 @@ public class UsuarioController : Controller
         return RedirectToAction(nameof(Login));
     }
 
+    [RequiereSesion]
     public ActionResult Index()
     {
         return View(encontrarTodosUsuarios.Ejecutar());
     }
 
+    [RequiereSesion]
     public ActionResult Details(int id)
     {
         return View(obtenerUsuarioPorId.Ejecutar(id));
     }
 
+    [RequiereSesion]
     public ActionResult Create()
     {
         return View();
     }
 
+    [RequiereSesion]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Create(UsuarioDTO usuario)
@@ -88,11 +93,13 @@ public class UsuarioController : Controller
         }
     }
 
+    [RequiereSesion]
     public ActionResult Edit(int id)
     {
         return View();
     }
 
+    [RequiereSesion]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Edit(int id, IFormCollection collection)
@@ -107,11 +114,13 @@ public class UsuarioController : Controller
         }
     }
 
+    [RequiereSesion]
     public ActionResult Delete(int id)
     {
         return View();
     }
 
+    [RequiereSesion]
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult Delete(int id, IFormCollection collection)

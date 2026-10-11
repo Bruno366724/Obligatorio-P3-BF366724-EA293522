@@ -2,9 +2,11 @@ using DTOs.DTOs;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Categorias;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presentacion.Filtros;
 
 namespace Presentacion.Controllers;
 
+[RequiereSesion]
 public class CategoriaController : Controller
 {
     private readonly IEncontrarTodasCategorias encontrarTodasCategorias;

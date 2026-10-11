@@ -15,6 +15,10 @@ public class Lectura : IValidable
     public int? FinalAlcanzadoId { get; set; }
     public CapituloFinal? FinalAlcanzado { get; set; }
 
+    // Capitulo donde esta parado el lector ahora mismo.
+    public int CapituloActualId { get; set; }
+    public Capitulo? CapituloActual { get; set; }
+
     public void Validar()
     {
         if (UsuarioId <= 0 && Usuario is null)
@@ -22,6 +26,9 @@ public class Lectura : IValidable
 
         if (HistoriaId <= 0 && Historia is null)
             throw new LecturaException("La lectura debe estar asociada a una historia.");
+
+        if (CapituloActualId <= 0 && CapituloActual is null)
+            throw new LecturaException("La lectura debe tener un capítulo actual.");
 
         if (FechaFin.HasValue && FechaFin.Value < FechaInicio)
             throw new LecturaException("La fecha de finalización no puede ser anterior a la fecha de inicio.");
