@@ -6,7 +6,12 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 {
     public class RepositorioUsuarioEF : IRepositorioUsuario
     {
-        private readonly HistoriasContext contexto = new HistoriasContext();
+        private readonly HistoriasContext contexto;
+
+        public RepositorioUsuarioEF(HistoriasContext context)
+        {
+            contexto = context;
+        }
 
         public void Add(Usuario obj)
         {

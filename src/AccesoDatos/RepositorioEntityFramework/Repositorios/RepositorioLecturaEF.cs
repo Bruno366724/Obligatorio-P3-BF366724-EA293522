@@ -6,7 +6,12 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 {
     public class RepositorioLecturaEF : IRepositorioLectura
     {
-        private readonly HistoriasContext contexto = new HistoriasContext();
+        private readonly HistoriasContext contexto;
+
+        public RepositorioLecturaEF(HistoriasContext context)
+        {
+            contexto = context;
+        }
 
         private IQueryable<Lectura> ConDetalle()
         {

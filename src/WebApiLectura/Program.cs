@@ -1,6 +1,7 @@
 // Web API de Lectura (RF06+): login con JWT, historias, lecturas.
 
 using System.Text;
+using AccesoDatos.RepositorioEntityFramework;
 using AccesoDatos.RepositorioEntityFramework.Repositorios;
 using Dominio.InterfacesRepositorios;
 
@@ -15,6 +16,7 @@ using LogicaAplicacion.InterfacesDeCasoDeUso.Historias;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Lecturas;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Usuarios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 
@@ -62,6 +64,11 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddAuthorization();
+
+// Contexto de la base de datos, con la cadena de conexion de appsettings.json.
+builder.Services.AddDbContext<HistoriasContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("Historias"))
+    );
 
 builder.Services.AddScoped<IRepositorioUsuario, RepositorioUsuarioEF>();
 builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoriaEF>();

@@ -1,5 +1,7 @@
+using AccesoDatos.RepositorioEntityFramework;
 using AccesoDatos.RepositorioEntityFramework.Repositorios;
 using Dominio.InterfacesRepositorios;
+using Microsoft.EntityFrameworkCore;
 
 using LogicaAplicacion.CasosDeUso.Auditorias;
 using LogicaAplicacion.CasosDeUso.Categorias;
@@ -18,6 +20,11 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession();
+
+// Contexto de la base de datos, con la cadena de conexion de appsettings.json.
+builder.Services.AddDbContext<HistoriasContext>(
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("Historias"))
+    );
 
 builder.Services.AddScoped<IRepositorioUsuario, RepositorioUsuarioEF>();
 builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoriaEF>();

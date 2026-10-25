@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AccesoDatos.RepositorioEntityFramework
 {
-    internal class HistoriasContext : DbContext
+    public class HistoriasContext : DbContext
     {
         public DbSet<Auditoria> Auditorias { get; set; }
         public DbSet<Capitulo> Capitulos { get; set; }
@@ -18,10 +18,7 @@ namespace AccesoDatos.RepositorioEntityFramework
         public DbSet<CapituloFinal> CapituloFinales { get; set; }
         public DbSet<CapituloIntermedio> CapituloIntermedios { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(@"SERVER=(localdb)\MsSqlLocalDb;Database=HistoriasDB;Integrated Security=True;");
-        }
+        public HistoriasContext(DbContextOptions dbContextOptions) : base(dbContextOptions) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
