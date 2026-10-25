@@ -1,12 +1,10 @@
-using Dominio.Enumerados;
+using DTOs.DTOs;
 
 namespace MvcLectura.Models;
 
-// Forma de lo que devuelve POST /api/Autenticacion/Login en WebApiLectura.
+// Forma de lo que devuelve POST /api/Auth/login en WebApiLectura.
 public class LoginResponseDTO
 {
     public string Token { get; set; } = string.Empty;
-    public int Id { get; set; }
-    public string NombreUsuario { get; set; } = string.Empty;
-    public RolUsuario Rol { get; set; }
+    public UsuarioDTO Usuario { get; set; } = new UsuarioDTO();
 }

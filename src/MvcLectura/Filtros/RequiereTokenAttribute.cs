@@ -12,7 +12,7 @@ public class RequiereTokenAttribute : ActionFilterAttribute
         string? token = context.HttpContext.Session.GetString("Token");
         if (string.IsNullOrEmpty(token))
         {
-            context.Result = new RedirectToActionResult("Login", "Cuenta", null);
+            context.Result = new RedirectToActionResult("Login", "Auth", null);
             return;
         }
 

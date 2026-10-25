@@ -17,7 +17,6 @@ using LogicaAplicacion.InterfacesDeCasoDeUso.Usuarios;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
-using WebApiLectura.Servicios;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -42,28 +41,27 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-// Autenticacion por JWT. Clave/emisor/audiencia salen de appsettings.json ("Jwt").
-IConfigurationSection configJwt = builder.Configuration.GetSection("Jwt");
-string claveJwt = configJwt["Clave"]!;
-
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+// Autenticacion por JWT. La clave sale de appsettings.json ("Jwt:Key").
+byte[] key = Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty);
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters
     {
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateIssuer = true,
-            ValidIssuer = configJwt["Emisor"],
-            ValidateAudience = true,
-            ValidAudience = configJwt["Audiencia"],
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(claveJwt)),
-            ValidateLifetime = true
-        };
-    });
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key)
+    };
+});
 
 builder.Services.AddAuthorization();
-builder.Services.AddScoped<GeneradorTokenJwt>();
 
 builder.Services.AddScoped<IRepositorioUsuario, RepositorioUsuarioEF>();
 builder.Services.AddScoped<IRepositorioCategoria, RepositorioCategoriaEF>();
