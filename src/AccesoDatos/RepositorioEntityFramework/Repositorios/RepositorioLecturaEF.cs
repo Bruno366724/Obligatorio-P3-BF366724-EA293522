@@ -54,6 +54,7 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
         public IEnumerable<Lectura> FindCompletadas()
         {
             return contexto.Lecturas
+                .Include(l => l.Usuario)
                 .Include(l => l.Historia)
                 .Include(l => l.FinalAlcanzado)
                 .Where(l => l.FechaFin != null)

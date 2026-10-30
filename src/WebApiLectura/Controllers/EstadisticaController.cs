@@ -15,13 +15,16 @@ public class EstadisticaController : ControllerBase
 {
     private readonly IEncontrarRankingHistorias encontrarRankingHistorias;
     private readonly IEncontrarAlcancesDeFinales encontrarAlcancesDeFinales;
+    private readonly IEncontrarRankingUsuarios encontrarRankingUsuarios;
 
     public EstadisticaController(
         IEncontrarRankingHistorias encontrarRankingHistoriasCu,
-        IEncontrarAlcancesDeFinales encontrarAlcancesDeFinalesCu)
+        IEncontrarAlcancesDeFinales encontrarAlcancesDeFinalesCu,
+        IEncontrarRankingUsuarios encontrarRankingUsuariosCu)
     {
         encontrarRankingHistorias = encontrarRankingHistoriasCu;
         encontrarAlcancesDeFinales = encontrarAlcancesDeFinalesCu;
+        encontrarRankingUsuarios = encontrarRankingUsuariosCu;
     }
 
     // GET: api/Estadistica/HistoriasMasLeidas -- lista vacia (200) si no hay lecturas completadas.
@@ -43,5 +46,12 @@ public class EstadisticaController : ControllerBase
         {
             return NotFound(ex.Message);
         }
+    }
+
+    // GET: api/Estadistica/UsuariosConMasHistorias -- lista vacia (200) si nadie completo ninguna.
+    [HttpGet("UsuariosConMasHistorias")]
+    public ActionResult<List<RankingUsuarioDTO>> UsuariosConMasHistorias()
+    {
+        return Ok(encontrarRankingUsuarios.Ejecutar());
     }
 }

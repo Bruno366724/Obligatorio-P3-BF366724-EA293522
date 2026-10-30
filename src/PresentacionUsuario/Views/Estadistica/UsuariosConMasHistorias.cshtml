@@ -1,0 +1,39 @@
+@model List<DTOs.DTOs.RankingUsuarioDTO>
+
+@{
+    ViewData["Title"] = "Usuarios con más historias leídas";
+}
+
+<h1>Usuarios con más historias leídas</h1>
+<p class="text-muted">Ordenados por cantidad de historias distintas que leyeron hasta un final.</p>
+
+@if (Model.Count == 0)
+{
+    <p class="text-muted">Todavía ningún usuario completó una historia.</p>
+}
+else
+{
+    <div class="card p-3">
+        <table class="table mb-0">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Historias completadas</th>
+                </tr>
+            </thead>
+            <tbody>
+@for (int i = 0; i < Model.Count; i++)
+{
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@Model[i].NombreUsuario</td>
+                    <td>@Model[i].NombreCompleto</td>
+                    <td>@Model[i].CantidadHistorias</td>
+                </tr>
+}
+            </tbody>
+        </table>
+    </div>
+}

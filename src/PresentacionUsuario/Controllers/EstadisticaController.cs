@@ -26,6 +26,19 @@ public class EstadisticaController : ControladorBase
         return View(ranking);
     }
 
+    // GET: Estadistica/UsuariosConMasHistorias
+    public async Task<ActionResult> UsuariosConMasHistorias()
+    {
+        HttpClient cliente = CrearClienteAutenticado();
+
+        HttpResponseMessage respuesta = await cliente.GetAsync("api/Estadistica/UsuariosConMasHistorias");
+        if (respuesta.StatusCode == HttpStatusCode.Forbidden)
+            return View("SinPermiso");
+
+        List<RankingUsuarioDTO> ranking = await respuesta.Content.ReadFromJsonAsync<List<RankingUsuarioDTO>>() ?? [];
+        return View(ranking);
+    }
+
     // GET: Estadistica/FinalesPorHistoria?historiaId=9 -- sin historiaId, solo muestra el combo.
     public async Task<ActionResult> FinalesPorHistoria(int? historiaId)
     {

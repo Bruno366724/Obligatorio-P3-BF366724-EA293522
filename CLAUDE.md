@@ -116,7 +116,7 @@ Dominio  <── AccesoDatos
   `Filtros/RequiereSesionAttribute` (chequea `Session["UsuarioId"]`), **no**
   `[Authorize]` (ver RF01 más abajo).
 - **WebApiLectura**: Web API (`Microsoft.NET.Sdk.Web`), mismas 4 capas de abajo que
-  PresentacionAdmin. RF06-RF10 (y, a futuro, RF11). Login con JWT
+  PresentacionAdmin. RF06-RF11. Login con JWT
   (`Controllers/AuthController` + `TokenHandler/JWTHandler` estático, recibe
   `DTOs/LoginDTO`, devuelve `{ Token, Usuario }`), configurado en `Program.cs` con el
   paquete oficial `Microsoft.AspNetCore.Authentication.JwtBearer` — solo la clave en
@@ -132,12 +132,12 @@ Dominio  <── AccesoDatos
   `"WebApiLectura:BaseUrl"`). El token JWT se guarda en `Session` (mismo mecanismo que
   RF01, pero acá "estar logueado" es tener token, no `UsuarioId`). Rutas protegidas
   con `Filtros/RequiereTokenAttribute`, puesto en `Controllers/ControladorBase`
-  (clase abstracta que heredan `HistoriaController`/`LecturaController`, con un
+  (clase abstracta que heredan `HistoriaController`/`LecturaController`/`EstadisticaController`, con un
   `CrearClienteAutenticado()` que arma el `HttpClient` con el header `Authorization`
   ya puesto). `AuthController` (Login con `LoginDTO` + vista tipada, Logout).
-  RF06-RF08 del lado del cliente.
+  RF06-RF11 del lado del cliente (menú según `Session["Rol"]`).
 
-**Estado actual (actualizado 10/10): RF01-RF08 funcionalmente completos** (Entregas
+**Estado actual (actualizado 30/10): RF01-RF11 funcionalmente completos** (Entregas
 2 y 3 cumplidas) **salvo el Delete de RF03** (salteado a pedido de la cátedra). Ver
 sección "Estado de avance" más abajo para el resumen por RF, y
 `notas/notas-de-avance.md` (no commiteado, personal) para el detalle completo de bugs
@@ -224,7 +224,7 @@ entrega final.
   ahí el razonamiento/la historia de cómo se llegó a una decisión (eso va en
   `notas/notas-de-avance.md`, no en el código fuente). Aplica a todo el proyecto.
 
-## Estado de avance (actualizado 10/10/2026)
+## Estado de avance (actualizado 30/10/2026)
 
 Contexto para retomar: esta sección se actualiza a medida que se avanza, para que
 una sesión nueva sepa exactamente dónde se quedó sin tener que releer todo el
@@ -344,10 +344,16 @@ finales con 0. `EncontrarAlcancesDeFinalesCU` (`CasosDeUso/Historias/`, usa
 (404 si la historia no existe). Cliente: `Estadistica/FinalesPorHistoria?historiaId=`
 con combo de historias publicadas (`FinalesPorHistoriaViewModel`).
 
-### Pendiente
+### RF11 — Usuario con más historias leídas: completo (API + cliente MVC)
 
-- RF11 (usuarios con más historias distintas completadas, lado Administrador): va en
-  `EstadisticaController` de `WebApiLectura` + `PresentacionUsuario`.
+Reutiliza `FindCompletadas()` (con `Include` de Usuario). `EncontrarRankingUsuariosCU`:
+GroupBy por usuario, `Select(HistoriaId).Distinct().Count()` (historias **distintas**,
+no lecturas), OrderByDescending, desempate por nombre de usuario → `RankingUsuarioDTO`
+(sin password). Usuarios sin ninguna completada no aparecen. Endpoint `GET
+api/Estadistica/UsuariosConMasHistorias`; cliente `Estadistica/UsuariosConMasHistorias`
+(link "Lectores" en el menú del Administrador).
+
+### Pendiente
 - RF12 (estilos de lectura) y RF05 de la segunda tanda del enunciado (investigación
   con IA, documentar aparte) — necesitan que `PresentacionUsuario` ya tenga pantallas para
   aplicarles el tema.
