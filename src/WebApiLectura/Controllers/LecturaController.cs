@@ -1,3 +1,4 @@
+using System.Net;
 using System.Security.Claims;
 using Dominio.Excepciones;
 using DTOs.DTOs;
@@ -36,6 +37,10 @@ public class LecturaController : ControllerBase
 
     // GET: api/Lectura/5 -- chequea pertenencia aca (el CU es generico, sin esa nocion).
     [HttpGet("{id}")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<LecturaDTO> Get(int id)
     {
         try
@@ -46,44 +51,71 @@ public class LecturaController : ControllerBase
 
             return Ok(lectura);
         }
-        catch (DomainException ex)
+        catch (LecturaException lex)
         {
-            return NotFound(ex.Message);
+            return NotFound(lex.Message);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error inesperado, vuelva a intentar más tarde.");
         }
     }
 
     // GET: api/Lectura/Historial?mes=10&anio=2026 -- lista vacia (200) si no hay lecturas.
     [HttpGet("Historial")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<List<LecturaDTO>> Historial([FromQuery] int mes, [FromQuery] int anio)
     {
-        return Ok(encontrarHistorialLecturas.Ejecutar(UsuarioId, mes, anio));
+        try
+        {
+            return Ok(encontrarHistorialLecturas.Ejecutar(UsuarioId, mes, anio));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error inesperado, vuelva a intentar más tarde.");
+        }
     }
 
     // POST: api/Lectura/Iniciar
     [HttpPost("Iniciar")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<LecturaDTO> Iniciar(IniciarLecturaRequestDTO request)
     {
         try
         {
             return Ok(iniciarLectura.Ejecutar(UsuarioId, request.HistoriaId));
         }
-        catch (DomainException ex)
+        catch (LecturaException lex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(lex.Message);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error inesperado, vuelva a intentar más tarde.");
         }
     }
 
     // POST: api/Lectura/5/Avanzar
     [HttpPost("{id}/Avanzar")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<LecturaDTO> Avanzar(int id, AvanzarLecturaRequestDTO request)
     {
         try
         {
             return Ok(avanzarLectura.Ejecutar(id, request.OpcionId, UsuarioId));
         }
-        catch (DomainException ex)
+        catch (LecturaException lex)
         {
-            return BadRequest(ex.Message);
+            return BadRequest(lex.Message);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error inesperado, vuelva a intentar más tarde.");
         }
     }
 }

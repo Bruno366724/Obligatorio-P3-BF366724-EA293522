@@ -1,5 +1,6 @@
 using Dominio.Entidades;
 using Dominio.Enumerados;
+using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
 
@@ -32,17 +33,24 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Add(Historia obj)
         {
-            obj.Categorias = ResolverCategorias(obj.Categorias);
+            try
+            {
+                obj.Categorias = ResolverCategorias(obj.Categorias);
 
-            // Guardado en dos pasos por el ciclo de FKs Historia<->CapituloInicial.
-            CapituloIntermedio? capituloInicial = obj.CapituloInicial;
-            obj.CapituloInicial = null;
+                // Guardado en dos pasos por el ciclo de FKs Historia<->CapituloInicial.
+                CapituloIntermedio? capituloInicial = obj.CapituloInicial;
+                obj.CapituloInicial = null;
 
-            contexto.Historias.Add(obj);
-            contexto.SaveChanges();
+                contexto.Historias.Add(obj);
+                contexto.SaveChanges();
 
-            obj.CapituloInicial = capituloInicial;
-            contexto.SaveChanges();
+                obj.CapituloInicial = capituloInicial;
+                contexto.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new HistoriaException("Error al guardar en la base de datos.");
+            }
         }
 
         public IEnumerable<Historia> FindAll()
@@ -67,19 +75,33 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Remove(int id)
         {
-            Historia? historia = contexto.Historias.Find(id);
-            if (historia is not null)
+            try
             {
-                contexto.Historias.Remove(historia);
-                contexto.SaveChanges();
+                Historia? historia = contexto.Historias.Find(id);
+                if (historia is not null)
+                {
+                    contexto.Historias.Remove(historia);
+                    contexto.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+                throw new HistoriaException("Error al eliminar en la base de datos.");
             }
         }
 
         public void Update(Historia obj)
         {
-            obj.Categorias = ResolverCategorias(obj.Categorias);
-            contexto.Historias.Update(obj);
-            contexto.SaveChanges();
+            try
+            {
+                obj.Categorias = ResolverCategorias(obj.Categorias);
+                contexto.Historias.Update(obj);
+                contexto.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new HistoriaException("Error al guardar en la base de datos.");
+            }
         }
     }
 }

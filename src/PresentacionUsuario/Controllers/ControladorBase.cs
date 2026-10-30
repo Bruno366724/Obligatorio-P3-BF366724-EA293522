@@ -8,6 +8,8 @@ namespace PresentacionUsuario.Controllers;
 [RequiereToken]
 public abstract class ControladorBase : Controller
 {
+    protected const string ErrorConexion = "No se pudo conectar con el servidor, vuelva a intentar más tarde.";
+
     private readonly IHttpClientFactory httpClientFactory;
 
     protected ControladorBase(IHttpClientFactory clientFactory)

@@ -16,27 +16,53 @@ public class EstadisticaController : ControladorBase
     // GET: Estadistica/HistoriasMasLeidas
     public async Task<ActionResult> HistoriasMasLeidas()
     {
-        HttpClient cliente = CrearClienteAutenticado();
+        try
+        {
+            HttpClient cliente = CrearClienteAutenticado();
 
-        HttpResponseMessage respuesta = await cliente.GetAsync("api/Estadistica/HistoriasMasLeidas");
-        if (respuesta.StatusCode == HttpStatusCode.Forbidden)
-            return View("SinPermiso");
+            HttpResponseMessage respuesta = await cliente.GetAsync("api/Estadistica/HistoriasMasLeidas");
+            if (respuesta.StatusCode == HttpStatusCode.Forbidden)
+                return View("SinPermiso");
+            if (!respuesta.IsSuccessStatusCode)
+            {
+                ViewBag.Error = await respuesta.Content.ReadAsStringAsync();
+                return View(new List<RankingHistoriaDTO>());
+            }
 
-        List<RankingHistoriaDTO> ranking = await respuesta.Content.ReadFromJsonAsync<List<RankingHistoriaDTO>>() ?? [];
-        return View(ranking);
+            List<RankingHistoriaDTO> ranking = await respuesta.Content.ReadFromJsonAsync<List<RankingHistoriaDTO>>() ?? [];
+            return View(ranking);
+        }
+        catch
+        {
+            ViewBag.Error = ErrorConexion;
+            return View(new List<RankingHistoriaDTO>());
+        }
     }
 
     // GET: Estadistica/UsuariosConMasHistorias
     public async Task<ActionResult> UsuariosConMasHistorias()
     {
-        HttpClient cliente = CrearClienteAutenticado();
+        try
+        {
+            HttpClient cliente = CrearClienteAutenticado();
 
-        HttpResponseMessage respuesta = await cliente.GetAsync("api/Estadistica/UsuariosConMasHistorias");
-        if (respuesta.StatusCode == HttpStatusCode.Forbidden)
-            return View("SinPermiso");
+            HttpResponseMessage respuesta = await cliente.GetAsync("api/Estadistica/UsuariosConMasHistorias");
+            if (respuesta.StatusCode == HttpStatusCode.Forbidden)
+                return View("SinPermiso");
+            if (!respuesta.IsSuccessStatusCode)
+            {
+                ViewBag.Error = await respuesta.Content.ReadAsStringAsync();
+                return View(new List<RankingUsuarioDTO>());
+            }
 
-        List<RankingUsuarioDTO> ranking = await respuesta.Content.ReadFromJsonAsync<List<RankingUsuarioDTO>>() ?? [];
-        return View(ranking);
+            List<RankingUsuarioDTO> ranking = await respuesta.Content.ReadFromJsonAsync<List<RankingUsuarioDTO>>() ?? [];
+            return View(ranking);
+        }
+        catch
+        {
+            ViewBag.Error = ErrorConexion;
+            return View(new List<RankingUsuarioDTO>());
+        }
     }
 
     // GET: Estadistica/FinalesPorHistoria?historiaId=9 -- sin historiaId, solo muestra el combo.
@@ -45,24 +71,28 @@ public class EstadisticaController : ControladorBase
         if (HttpContext.Session.GetString("Rol") != "Administrador")
             return View("SinPermiso");
 
-        HttpClient cliente = CrearClienteAutenticado();
-
-        FinalesPorHistoriaViewModel modelo = new FinalesPorHistoriaViewModel
+        FinalesPorHistoriaViewModel modelo = new FinalesPorHistoriaViewModel { HistoriaId = historiaId };
+        try
         {
-            Historias = await cliente.GetFromJsonAsync<List<HistoriaDTO>>("api/Historia") ?? [],
-            HistoriaId = historiaId
-        };
+            HttpClient cliente = CrearClienteAutenticado();
 
-        if (historiaId.HasValue)
+            modelo.Historias = await cliente.GetFromJsonAsync<List<HistoriaDTO>>("api/Historia") ?? [];
+
+            if (historiaId.HasValue)
+            {
+                HttpResponseMessage respuesta = await cliente.GetAsync($"api/Estadistica/FinalesPorHistoria/{historiaId}");
+                if (respuesta.StatusCode == HttpStatusCode.Forbidden)
+                    return View("SinPermiso");
+
+                if (respuesta.IsSuccessStatusCode)
+                    modelo.Finales = await respuesta.Content.ReadFromJsonAsync<List<AlcanceFinalDTO>>() ?? [];
+                else
+                    ViewBag.Error = await respuesta.Content.ReadAsStringAsync();
+            }
+        }
+        catch
         {
-            HttpResponseMessage respuesta = await cliente.GetAsync($"api/Estadistica/FinalesPorHistoria/{historiaId}");
-            if (respuesta.StatusCode == HttpStatusCode.Forbidden)
-                return View("SinPermiso");
-
-            if (respuesta.IsSuccessStatusCode)
-                modelo.Finales = await respuesta.Content.ReadFromJsonAsync<List<AlcanceFinalDTO>>() ?? [];
-            else
-                TempData["Error"] = await respuesta.Content.ReadAsStringAsync();
+            ViewBag.Error = ErrorConexion;
         }
 
         return View(modelo);

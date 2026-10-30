@@ -1,4 +1,5 @@
 using Dominio.Enumerados;
+using Dominio.Excepciones;
 using DTOs.DTOs;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Auditorias;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Historias;
@@ -58,12 +59,25 @@ public class AuditoriaController : Controller
 
     public ActionResult Details(int id)
     {
-        // Mismas listas que Index, para mostrar nombres en vez de ids.
-        ViewBag.Historias = encontrarTodasHistorias.Ejecutar();
-        ViewBag.Administradores = encontrarTodosUsuarios.Ejecutar()
-            .Where(usuario => usuario.Rol == RolUsuario.Administrador)
-            .ToList();
+        try
+        {
+            // Mismas listas que Index, para mostrar nombres en vez de ids.
+            ViewBag.Historias = encontrarTodasHistorias.Ejecutar();
+            ViewBag.Administradores = encontrarTodosUsuarios.Ejecutar()
+                .Where(usuario => usuario.Rol == RolUsuario.Administrador)
+                .ToList();
 
-        return View(obtenerAuditoriaPorId.Ejecutar(id));
+            return View(obtenerAuditoriaPorId.Ejecutar(id));
+        }
+        catch (AuditoriaException aex)
+        {
+            TempData["Error"] = aex.Message;
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            TempData["Error"] = "Error inesperado al cargar la auditoría.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

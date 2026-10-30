@@ -1,3 +1,4 @@
+using System.Net;
 using DTOs.DTOs;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Categorias;
 using Microsoft.AspNetCore.Authorization;
@@ -20,8 +21,17 @@ public class CategoriaController : ControllerBase
 
     // GET: api/Categoria
     [HttpGet]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<List<CategoriaDTO>> Get()
     {
-        return Ok(encontrarTodasCategorias.Ejecutar());
+        try
+        {
+            return Ok(encontrarTodasCategorias.Ejecutar());
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error inesperado, vuelva a intentar más tarde.");
+        }
     }
 }

@@ -1,4 +1,5 @@
 using Dominio.Entidades;
+using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
 
@@ -23,8 +24,15 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Add(Auditoria obj)
         {
-            contexto.Auditorias.Add(obj);
-            contexto.SaveChanges();
+            try
+            {
+                contexto.Auditorias.Add(obj);
+                contexto.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new AuditoriaException("Error al guardar en la base de datos.");
+            }
         }
 
         public IEnumerable<Auditoria> FindAll()
@@ -49,18 +57,32 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Remove(int id)
         {
-            Auditoria? auditoria = contexto.Auditorias.Find(id);
-            if (auditoria is not null)
+            try
             {
-                contexto.Auditorias.Remove(auditoria);
-                contexto.SaveChanges();
+                Auditoria? auditoria = contexto.Auditorias.Find(id);
+                if (auditoria is not null)
+                {
+                    contexto.Auditorias.Remove(auditoria);
+                    contexto.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+                throw new AuditoriaException("Error al eliminar en la base de datos.");
             }
         }
 
         public void Update(Auditoria obj)
         {
-            contexto.Auditorias.Update(obj);
-            contexto.SaveChanges();
+            try
+            {
+                contexto.Auditorias.Update(obj);
+                contexto.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new AuditoriaException("Error al guardar en la base de datos.");
+            }
         }
     }
 }

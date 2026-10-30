@@ -34,31 +34,39 @@ public class AuthController : Controller
         if (!ModelState.IsValid)
             return View(dto);
 
-        HttpClient cliente = httpClientFactory.CreateClient("WebApiLectura");
-
-        HttpResponseMessage respuesta = await cliente.PostAsJsonAsync("api/Auth/login", dto);
-
-        if (!respuesta.IsSuccessStatusCode)
+        try
         {
-            // La Web API devuelve el mensaje de error en texto plano.
-            string mensaje = await respuesta.Content.ReadAsStringAsync();
-            ModelState.AddModelError(string.Empty, string.IsNullOrWhiteSpace(mensaje) ? "Usuario o contraseña incorrectos." : mensaje);
+            HttpClient cliente = httpClientFactory.CreateClient("WebApiLectura");
+
+            HttpResponseMessage respuesta = await cliente.PostAsJsonAsync("api/Auth/login", dto);
+
+            if (!respuesta.IsSuccessStatusCode)
+            {
+                // La Web API devuelve el mensaje de error en texto plano.
+                string mensaje = await respuesta.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, string.IsNullOrWhiteSpace(mensaje) ? "Usuario o contraseña incorrectos." : mensaje);
+                return View(dto);
+            }
+
+            LoginResponseDTO? datos = await respuesta.Content.ReadFromJsonAsync<LoginResponseDTO>();
+            if (datos is null)
+            {
+                ModelState.AddModelError(string.Empty, "No se pudo iniciar sesión.");
+                return View(dto);
+            }
+
+            HttpContext.Session.SetString("Token", datos.Token);
+            HttpContext.Session.SetInt32("UsuarioId", datos.Usuario.Id);
+            HttpContext.Session.SetString("NombreUsuario", datos.Usuario.NombreUsuario);
+            HttpContext.Session.SetString("Rol", datos.Usuario.Rol.ToString());
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "No se pudo conectar con el servidor, vuelva a intentar más tarde.");
             return View(dto);
         }
-
-        LoginResponseDTO? datos = await respuesta.Content.ReadFromJsonAsync<LoginResponseDTO>();
-        if (datos is null)
-        {
-            ModelState.AddModelError(string.Empty, "No se pudo iniciar sesión.");
-            return View(dto);
-        }
-
-        HttpContext.Session.SetString("Token", datos.Token);
-        HttpContext.Session.SetInt32("UsuarioId", datos.Usuario.Id);
-        HttpContext.Session.SetString("NombreUsuario", datos.Usuario.NombreUsuario);
-        HttpContext.Session.SetString("Rol", datos.Usuario.Rol.ToString());
-
-        return RedirectToAction(nameof(Index));
     }
 
 

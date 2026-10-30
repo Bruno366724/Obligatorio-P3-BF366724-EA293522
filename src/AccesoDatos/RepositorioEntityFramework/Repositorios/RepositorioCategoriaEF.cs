@@ -1,4 +1,5 @@
 using Dominio.Entidades;
+using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,8 +16,15 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Add(Categoria obj)
         {
-            contexto.Categorias.Add(obj);
-            contexto.SaveChanges();
+            try
+            {
+                contexto.Categorias.Add(obj);
+                contexto.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new CategoriaException("Error al guardar en la base de datos.");
+            }
         }
 
         public IEnumerable<Categoria> FindAll()
@@ -31,18 +39,32 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Remove(int id)
         {
-            Categoria? categoria = contexto.Categorias.Find(id);
-            if (categoria is not null)
+            try
             {
-                contexto.Categorias.Remove(categoria);
-                contexto.SaveChanges();
+                Categoria? categoria = contexto.Categorias.Find(id);
+                if (categoria is not null)
+                {
+                    contexto.Categorias.Remove(categoria);
+                    contexto.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+                throw new CategoriaException("Error al eliminar en la base de datos.");
             }
         }
 
         public void Update(Categoria obj)
         {
-            contexto.Categorias.Update(obj);
-            contexto.SaveChanges();
+            try
+            {
+                contexto.Categorias.Update(obj);
+                contexto.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new CategoriaException("Error al guardar en la base de datos.");
+            }
         }
     }
 }

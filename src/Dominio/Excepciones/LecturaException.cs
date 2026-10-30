@@ -1,16 +1,10 @@
 namespace Dominio.Excepciones;
 
-public class LecturaException : DomainException
+public class LecturaException : Exception
 {
-    public LecturaException()
-    {
-    }
+    public LecturaException() { }
 
-    public LecturaException(string message) : base(message)
-    {
-    }
+    public LecturaException(string message) : base(message) { }
 
-    public LecturaException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
+    public LecturaException(string? message, Exception? innerException) : base(message, innerException) { }
 }

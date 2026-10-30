@@ -41,6 +41,10 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
+            @if (TempData["Error"] is string error)
+            {
+                <div class="validation-summary-errors"><ul><li>@error</li></ul></div>
+            }
             @RenderBody()
         </main>
     </div>

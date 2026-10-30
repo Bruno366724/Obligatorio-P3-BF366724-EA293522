@@ -45,7 +45,20 @@ public class HistoriaController : Controller
 
     public ActionResult Details(int id)
     {
-        return View(obtenerHistoriaPorId.Ejecutar(id));
+        try
+        {
+            return View(obtenerHistoriaPorId.Ejecutar(id));
+        }
+        catch (HistoriaException hex)
+        {
+            TempData["Error"] = hex.Message;
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            TempData["Error"] = "Error inesperado al cargar la historia.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     public ActionResult Create()
@@ -81,9 +94,15 @@ public class HistoriaController : Controller
             agregarHistoria.Ejecutar(dto, AdministradorId);
             return RedirectToAction(nameof(Index));
         }
-        catch (DomainException ex)
+        catch (HistoriaException hex)
         {
-            ModelState.AddModelError(string.Empty, ex.Message);
+            ModelState.AddModelError(string.Empty, hex.Message);
+            ViewBag.Categorias = encontrarTodasCategorias.Ejecutar();
+            return View();
+        }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "Error inesperado al crear la historia, vuelva a intentar.");
             ViewBag.Categorias = encontrarTodasCategorias.Ejecutar();
             return View();
         }
@@ -91,8 +110,21 @@ public class HistoriaController : Controller
 
     public ActionResult Edit(int id)
     {
-        ViewBag.Categorias = encontrarTodasCategorias.Ejecutar();
-        return View(obtenerHistoriaPorId.Ejecutar(id));
+        try
+        {
+            ViewBag.Categorias = encontrarTodasCategorias.Ejecutar();
+            return View(obtenerHistoriaPorId.Ejecutar(id));
+        }
+        catch (HistoriaException hex)
+        {
+            TempData["Error"] = hex.Message;
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            TempData["Error"] = "Error inesperado al cargar la historia.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     // Campos sueltos, igual que en Create. La edición no toca Capitulos.
@@ -114,24 +146,41 @@ public class HistoriaController : Controller
             editarHistoria.Ejecutar(dto, AdministradorId);
             return RedirectToAction(nameof(Index));
         }
-        catch (DomainException ex)
+        catch (HistoriaException hex)
         {
-            ModelState.AddModelError(string.Empty, ex.Message);
-            ViewBag.Categorias = encontrarTodasCategorias.Ejecutar();
-            return View(obtenerHistoriaPorId.Ejecutar(id));
+            ModelState.AddModelError(string.Empty, hex.Message);
+            return Edit(id);
+        }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "Error inesperado al editar la historia, vuelva a intentar.");
+            return Edit(id);
         }
     }
 
     // Agrega un capitulo (intermedio o final) a continuacion de un capitulo intermedio.
     public ActionResult AgregarCapitulo(int historiaId, int capituloAntecedenteId)
     {
-        HistoriaDTO historia = obtenerHistoriaPorId.Ejecutar(historiaId);
-        ViewBag.HistoriaId = historiaId;
-        ViewBag.HistoriaTitulo = historia.Titulo;
-        ViewBag.CapituloAntecedenteId = capituloAntecedenteId;
-        ViewBag.CapituloAntecedenteTitulo = historia.Capitulos
-            .First(capitulo => capitulo.Id == capituloAntecedenteId).Titulo;
-        return View();
+        try
+        {
+            HistoriaDTO historia = obtenerHistoriaPorId.Ejecutar(historiaId);
+            ViewBag.HistoriaId = historiaId;
+            ViewBag.HistoriaTitulo = historia.Titulo;
+            ViewBag.CapituloAntecedenteId = capituloAntecedenteId;
+            ViewBag.CapituloAntecedenteTitulo = historia.Capitulos
+                .First(capitulo => capitulo.Id == capituloAntecedenteId).Titulo;
+            return View();
+        }
+        catch (HistoriaException hex)
+        {
+            TempData["Error"] = hex.Message;
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            TempData["Error"] = "No se encontró el capítulo indicado en esta historia.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [HttpPost]
@@ -144,16 +193,15 @@ public class HistoriaController : Controller
             agregarCapitulo.Ejecutar(historiaId, capituloAntecedenteId, esFinal, titulo, texto, textoOpcion, AdministradorId);
             return RedirectToAction(nameof(Details), new { id = historiaId });
         }
-        catch (DomainException ex)
+        catch (HistoriaException hex)
         {
-            ModelState.AddModelError(string.Empty, ex.Message);
-            HistoriaDTO historia = obtenerHistoriaPorId.Ejecutar(historiaId);
-            ViewBag.HistoriaId = historiaId;
-            ViewBag.HistoriaTitulo = historia.Titulo;
-            ViewBag.CapituloAntecedenteId = capituloAntecedenteId;
-            ViewBag.CapituloAntecedenteTitulo = historia.Capitulos
-                .First(capitulo => capitulo.Id == capituloAntecedenteId).Titulo;
-            return View();
+            ModelState.AddModelError(string.Empty, hex.Message);
+            return AgregarCapitulo(historiaId, capituloAntecedenteId);
+        }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "Error inesperado al agregar el capítulo, vuelva a intentar.");
+            return AgregarCapitulo(historiaId, capituloAntecedenteId);
         }
     }
 }

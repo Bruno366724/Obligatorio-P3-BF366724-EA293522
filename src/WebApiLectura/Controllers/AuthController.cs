@@ -27,6 +27,7 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult Login([FromBody] LoginDTO dto)
     {
         try
@@ -47,9 +48,9 @@ public class AuthController : ControllerBase
         {
             return BadRequest(uex.Message);
         }
-        catch (Exception ex)
+        catch (Exception)
         {
-            return StatusCode(500, ex.Message);
+            return StatusCode(500, "Error inesperado, vuelva a intentar más tarde.");
         }
     }
 }

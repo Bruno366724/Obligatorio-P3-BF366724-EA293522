@@ -1,3 +1,4 @@
+using System.Net;
 using Dominio.Excepciones;
 using DTOs.DTOs;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Historias;
@@ -25,22 +26,38 @@ public class HistoriaController : ControllerBase
 
     // GET: api/Historia?categoriaId=5 -- solo Publicadas, categoria opcional.
     [HttpGet]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<List<HistoriaDTO>> Get([FromQuery] int? categoriaId)
     {
-        return Ok(encontrarHistoriasPublicadas.Ejecutar(categoriaId));
+        try
+        {
+            return Ok(encontrarHistoriasPublicadas.Ejecutar(categoriaId));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error inesperado, vuelva a intentar más tarde.");
+        }
     }
 
     // GET: api/Historia/5
     [HttpGet("{id}")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<HistoriaDTO> Get(int id)
     {
         try
         {
             return Ok(obtenerHistoriaPorId.Ejecutar(id));
         }
-        catch (DomainException ex)
+        catch (HistoriaException hex)
         {
-            return NotFound(ex.Message);
+            return NotFound(hex.Message);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error inesperado, vuelva a intentar más tarde.");
         }
     }
 }

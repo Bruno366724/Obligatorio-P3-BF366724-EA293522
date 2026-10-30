@@ -1,4 +1,5 @@
 using Dominio.Entidades;
+using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,8 +16,15 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Add(Usuario obj)
         {
-            contexto.Usuarios.Add(obj);
-            contexto.SaveChanges();
+            try
+            {
+                contexto.Usuarios.Add(obj);
+                contexto.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new UsuarioException("Error al guardar en la base de datos.");
+            }
         }
 
         public IEnumerable<Usuario> FindAll()
@@ -36,18 +44,32 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Remove(int id)
         {
-            Usuario? usuario = contexto.Usuarios.Find(id);
-            if (usuario is not null)
+            try
             {
-                contexto.Usuarios.Remove(usuario);
-                contexto.SaveChanges();
+                Usuario? usuario = contexto.Usuarios.Find(id);
+                if (usuario is not null)
+                {
+                    contexto.Usuarios.Remove(usuario);
+                    contexto.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+                throw new UsuarioException("Error al eliminar en la base de datos.");
             }
         }
 
         public void Update(Usuario obj)
         {
-            contexto.Usuarios.Update(obj);
-            contexto.SaveChanges();
+            try
+            {
+                contexto.Usuarios.Update(obj);
+                contexto.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new UsuarioException("Error al guardar en la base de datos.");
+            }
         }
     }
 }

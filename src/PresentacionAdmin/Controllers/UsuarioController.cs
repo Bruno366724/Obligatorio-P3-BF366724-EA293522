@@ -45,9 +45,14 @@ public class UsuarioController : Controller
 
             return RedirectToAction(nameof(Index));
         }
-        catch (DomainException ex)
+        catch (UsuarioException uex)
         {
-            ModelState.AddModelError(string.Empty, ex.Message);
+            ModelState.AddModelError(string.Empty, uex.Message);
+            return View();
+        }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "Error en el proceso de autenticación.");
             return View();
         }
     }
@@ -67,7 +72,20 @@ public class UsuarioController : Controller
     [RequiereSesion]
     public ActionResult Details(int id)
     {
-        return View(obtenerUsuarioPorId.Ejecutar(id));
+        try
+        {
+            return View(obtenerUsuarioPorId.Ejecutar(id));
+        }
+        catch (UsuarioException uex)
+        {
+            TempData["Error"] = uex.Message;
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            TempData["Error"] = "Error inesperado al cargar el usuario.";
+            return RedirectToAction(nameof(Index));
+        }
     }
 
     [RequiereSesion]
@@ -86,9 +104,14 @@ public class UsuarioController : Controller
             agregarUsuario.Ejecutar(usuario);
             return RedirectToAction(nameof(Index));
         }
-        catch (DomainException ex)
+        catch (UsuarioException uex)
         {
-            ModelState.AddModelError(string.Empty, ex.Message);
+            ModelState.AddModelError(string.Empty, uex.Message);
+            return View(usuario);
+        }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "Error inesperado al crear el usuario, vuelva a intentar.");
             return View(usuario);
         }
     }

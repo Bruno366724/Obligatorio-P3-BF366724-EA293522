@@ -13,27 +13,45 @@ public class HistoriaController : ControladorBase
 
     public async Task<ActionResult> Index(int? categoriaId)
     {
-        HttpClient cliente = CrearClienteAutenticado();
-
-        string url = categoriaId.HasValue ? $"api/Historia?categoriaId={categoriaId}" : "api/Historia";
-        List<HistoriaDTO> historias = await cliente.GetFromJsonAsync<List<HistoriaDTO>>(url) ?? [];
-        List<CategoriaDTO> categorias = await cliente.GetFromJsonAsync<List<CategoriaDTO>>("api/Categoria") ?? [];
-
-        ViewBag.Categorias = categorias;
         ViewBag.CategoriaIdSeleccionada = categoriaId;
+        try
+        {
+            HttpClient cliente = CrearClienteAutenticado();
 
-        return View(historias);
+            string url = categoriaId.HasValue ? $"api/Historia?categoriaId={categoriaId}" : "api/Historia";
+            List<HistoriaDTO> historias = await cliente.GetFromJsonAsync<List<HistoriaDTO>>(url) ?? [];
+            ViewBag.Categorias = await cliente.GetFromJsonAsync<List<CategoriaDTO>>("api/Categoria") ?? [];
+
+            return View(historias);
+        }
+        catch
+        {
+            ViewBag.Error = ErrorConexion;
+            ViewBag.Categorias = new List<CategoriaDTO>();
+            return View(new List<HistoriaDTO>());
+        }
     }
 
     public async Task<ActionResult> Details(int id)
     {
-        HttpClient cliente = CrearClienteAutenticado();
+        try
+        {
+            HttpClient cliente = CrearClienteAutenticado();
 
-        HttpResponseMessage respuesta = await cliente.GetAsync($"api/Historia/{id}");
-        if (!respuesta.IsSuccessStatusCode)
-            return NotFound();
+            HttpResponseMessage respuesta = await cliente.GetAsync($"api/Historia/{id}");
+            if (!respuesta.IsSuccessStatusCode)
+            {
+                TempData["Error"] = await respuesta.Content.ReadAsStringAsync();
+                return RedirectToAction(nameof(Index));
+            }
 
-        HistoriaDTO? historia = await respuesta.Content.ReadFromJsonAsync<HistoriaDTO>();
-        return View(historia);
+            HistoriaDTO? historia = await respuesta.Content.ReadFromJsonAsync<HistoriaDTO>();
+            return View(historia);
+        }
+        catch
+        {
+            TempData["Error"] = ErrorConexion;
+            return RedirectToAction(nameof(Index));
+        }
     }
 }

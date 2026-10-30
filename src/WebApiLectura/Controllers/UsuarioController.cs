@@ -1,3 +1,4 @@
+using System.Net;
 using Dominio.Excepciones;
 using DTOs.DTOs;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Usuarios;
@@ -25,22 +26,38 @@ public class UsuarioController : ControllerBase
 
     // GET: api/Usuario
     [HttpGet]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<IEnumerable<object>> Get()
     {
-        return Ok(encontrarTodosUsuarios.Ejecutar().Select(SinPassword));
+        try
+        {
+            return Ok(encontrarTodosUsuarios.Ejecutar().Select(SinPassword));
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error inesperado, vuelva a intentar más tarde.");
+        }
     }
 
     // GET: api/Usuario/5
     [HttpGet("{id}")]
+    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
+    [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<object> Get(int id)
     {
         try
         {
             return Ok(SinPassword(obtenerUsuarioPorId.Ejecutar(id)));
         }
-        catch (DomainException ex)
+        catch (UsuarioException uex)
         {
-            return NotFound(ex.Message);
+            return NotFound(uex.Message);
+        }
+        catch (Exception)
+        {
+            return StatusCode(500, "Error inesperado, vuelva a intentar más tarde.");
         }
     }
 

@@ -1,4 +1,5 @@
 using Dominio.Entidades;
+using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,8 +28,15 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Add(Lectura obj)
         {
-            contexto.Lecturas.Add(obj);
-            contexto.SaveChanges();
+            try
+            {
+                contexto.Lecturas.Add(obj);
+                contexto.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new LecturaException("Error al guardar en la base de datos.");
+            }
         }
 
         public IEnumerable<Lectura> FindAll()
@@ -63,18 +71,32 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 
         public void Remove(int id)
         {
-            Lectura? lectura = contexto.Lecturas.Find(id);
-            if (lectura is not null)
+            try
             {
-                contexto.Lecturas.Remove(lectura);
-                contexto.SaveChanges();
+                Lectura? lectura = contexto.Lecturas.Find(id);
+                if (lectura is not null)
+                {
+                    contexto.Lecturas.Remove(lectura);
+                    contexto.SaveChanges();
+                }
+            }
+            catch (Exception)
+            {
+                throw new LecturaException("Error al eliminar en la base de datos.");
             }
         }
 
         public void Update(Lectura obj)
         {
-            contexto.Lecturas.Update(obj);
-            contexto.SaveChanges();
+            try
+            {
+                contexto.Lecturas.Update(obj);
+                contexto.SaveChanges();
+            }
+            catch (Exception)
+            {
+                throw new LecturaException("Error al guardar en la base de datos.");
+            }
         }
     }
 }

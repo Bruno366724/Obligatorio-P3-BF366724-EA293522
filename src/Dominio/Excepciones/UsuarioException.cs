@@ -1,16 +1,10 @@
 namespace Dominio.Excepciones;
 
-public class UsuarioException : DomainException
+public class UsuarioException : Exception
 {
-    public UsuarioException()
-    {
-    }
+    public UsuarioException() { }
 
-    public UsuarioException(string message) : base(message)
-    {
-    }
+    public UsuarioException(string message) : base(message) { }
 
-    public UsuarioException(string message, Exception innerException) : base(message, innerException)
-    {
-    }
+    public UsuarioException(string? message, Exception? innerException) : base(message, innerException) { }
 }
