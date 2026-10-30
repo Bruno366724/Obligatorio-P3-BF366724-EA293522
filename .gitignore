@@ -364,3 +364,11 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Archivos personales y de la IA: quedan en la PC, no se suben al repo
+*.md
+/notas/
+/RedSocialM3C/
+
+# Archivos temporales de Word
+~$*
