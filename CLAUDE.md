@@ -116,7 +116,7 @@ Dominio  <── AccesoDatos
   `Filtros/RequiereSesionAttribute` (chequea `Session["UsuarioId"]`), **no**
   `[Authorize]` (ver RF01 más abajo).
 - **WebApiLectura**: Web API (`Microsoft.NET.Sdk.Web`), mismas 4 capas de abajo que
-  PresentacionAdmin. RF06-RF08 (y, a futuro, RF09-RF11). Login con JWT
+  PresentacionAdmin. RF06-RF09 (y, a futuro, RF10-RF11). Login con JWT
   (`Controllers/AuthController` + `TokenHandler/JWTHandler` estático, recibe
   `DTOs/LoginDTO`, devuelve `{ Token, Usuario }`), configurado en `Program.cs` con el
   paquete oficial `Microsoft.AspNetCore.Authentication.JwtBearer` — solo la clave en
@@ -322,10 +322,22 @@ descriptivo" que pide el enunciado es cosa de la UI, no de la API). Cliente MVC:
 (resolviendo título de historia y de final alcanzado, pidiendo cada `Historia`),
 con selector de mes/año y el mensaje cuando no hay resultados.
 
+### RF09 — Ranking de historias más leídas: completo (API + cliente MVC)
+
+`IRepositorioLectura.FindCompletadas()` (lecturas con `FechaFin != null`, con
+`Include` de Historia y FinalAlcanzado) + `EncontrarRankingHistoriasCU` (GroupBy por
+historia, Count, OrderByDescending, desempate por título) → `RankingHistoriaDTO`
+(DTO de resultado de consulta, sin mapper). Endpoint `GET
+api/Estadistica/HistoriasMasLeidas` en `WebApiLectura/Controllers/EstadisticaController`
+(`[Authorize(Roles = "Administrador")]`, donde van a ir también RF10/RF11). Cliente:
+`PresentacionUsuario/Controllers/EstadisticaController` (vista `SinPermiso` si la API
+da 403). El menú de `_Layout` depende de `Session["Rol"]`: el Administrador ve "Más
+leídas" y el Lector "Mi historial".
+
 ### Pendiente
 
-- RF09-RF11 (rankings/métricas, lado Administrador — van también en `WebApiLectura`
-  + `PresentacionUsuario`, no en `PresentacionAdmin`, según el enunciado).
+- RF10-RF11 (métricas, lado Administrador): van en `EstadisticaController` de
+  `WebApiLectura` + `PresentacionUsuario`, no en `PresentacionAdmin`, según el enunciado.
 - RF12 (estilos de lectura) y RF05 de la segunda tanda del enunciado (investigación
   con IA, documentar aparte) — necesitan que `PresentacionUsuario` ya tenga pantallas para
   aplicarles el tema.

@@ -98,6 +98,7 @@ builder.Services.AddScoped<IEncontrarTodasLecturas, EncontrarTodasLecturasCU>();
 builder.Services.AddScoped<IIniciarLectura, IniciarLecturaCU>();
 builder.Services.AddScoped<IAvanzarLectura, AvanzarLecturaCU>();
 builder.Services.AddScoped<IEncontrarHistorialLecturas, EncontrarHistorialLecturasCU>();
+builder.Services.AddScoped<IEncontrarRankingHistorias, EncontrarRankingHistoriasCU>();
 
 builder.Services.AddScoped<IAgregarAuditoria, AgregarAuditoriaCU>();
 builder.Services.AddScoped<IObtenerAuditoriaPorId, ObtenerAuditoriaPorIdCU>();

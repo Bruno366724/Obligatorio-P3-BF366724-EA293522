@@ -16,6 +16,7 @@
                 @{
                     // "Hay sesion" si hay token de la Web API guardado.
                     bool haySesion = !string.IsNullOrEmpty(Context.Session.GetString("Token"));
+                    bool esAdministrador = Context.Session.GetString("Rol") == "Administrador";
                 }
                 <a class="navbar-brand" asp-controller="Auth" asp-action="@(haySesion ? "Index" : "Login")">Lectura</a>
                 @if (haySesion)
@@ -29,9 +30,18 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Historia" asp-action="Index">Historias</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Lectura" asp-action="Historial">Mi historial</a>
-                            </li>
+                            @if (esAdministrador)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Estadistica" asp-action="HistoriasMasLeidas">Más leídas</a>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-controller="Lectura" asp-action="Historial">Mi historial</a>
+                                </li>
+                            }
                         </ul>
                         <span class="navbar-text me-3">@Context.Session.GetString("NombreUsuario") (@Context.Session.GetString("Rol"))</span>
                         <a class="nav-link text-dark" asp-controller="Auth" asp-action="Logout">Cerrar sesión</a>

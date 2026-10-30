@@ -20,6 +20,11 @@ public class RepositorioLectura : IRepositorioLectura
         throw new NotImplementedException();
     }
 
+    public IEnumerable<Lectura> FindCompletadas()
+    {
+        throw new NotImplementedException();
+    }
+
     public void Add(Lectura obj)
     {
         throw new NotImplementedException();

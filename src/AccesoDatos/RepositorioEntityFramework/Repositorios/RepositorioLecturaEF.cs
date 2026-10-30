@@ -50,6 +50,16 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
                 .ToList();
         }
 
+        // Lecturas que llegaron a un final.
+        public IEnumerable<Lectura> FindCompletadas()
+        {
+            return contexto.Lecturas
+                .Include(l => l.Historia)
+                .Include(l => l.FinalAlcanzado)
+                .Where(l => l.FechaFin != null)
+                .ToList();
+        }
+
         public void Remove(int id)
         {
             Lectura? lectura = contexto.Lecturas.Find(id);
