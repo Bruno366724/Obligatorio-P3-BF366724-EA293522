@@ -15,8 +15,9 @@ existe en disco. Léelo ahí para el detalle de cada RF, reglas de negocio y
 entregables; no lo dupliques acá.
 
 Fechas clave del enunciado: Entrega 1 (diagrama + solución sin código) 10/9 — ya
-cumplida. Entrega 2 (RF01-RF03) 24/9 — cumplida. Entrega 3 (RF06-RF08) 15/10 —
-cumplida. Entrega 4 (RF10-RF12) 21/10. Entrega final 12/11.
+cumplida. Entrega 2 (RF01-RF03) 15/10 — cumplida. Entrega 3 (RF06-RF08) 21/10 —
+cumplida. Entrega 4 (RF10-RF12) 12/11. RF09 no está en ninguna pre-entrega pero va
+en la entrega final (en gestión, fecha a confirmar).
 
 **`RedSocialM3C/`** es el ejercicio de clase del profe (otro tema, no de este
 obligatorio). Se sincroniza de tanto en tanto desde
@@ -32,14 +33,14 @@ Todo se corre desde la raíz del repo, sobre `Obligatorio.slnx` (formato .slnx, 
 
 ```
 dotnet build Obligatorio.slnx           # compila los 7 proyectos
-dotnet run --project src/Presentacion   # app MVC de Administración (puertos 5241/7047)
+dotnet run --project src/PresentacionAdmin   # app MVC de Administración (puertos 5241/7047)
 dotnet run --project src/WebApiLectura  # Web API de Lectura, con Swagger (5242/7048)
-dotnet run --project src/MvcLectura     # app MVC cliente de Lectura (5243/7049)
+dotnet run --project src/PresentacionUsuario # app MVC cliente de Lectura (5243/7049)
 ```
 
 Para correr las tres juntas desde Visual Studio: click derecho en la solución →
 "Configurar proyectos de inicio..." → "Varios proyectos de inicio" → Acción = Inicio
-en `Presentacion`, `WebApiLectura` y `MvcLectura`.
+en `PresentacionAdmin`, `WebApiLectura` y `PresentacionUsuario`.
 
 No hay tests todavía. Requiere .NET SDK 10 (`dotnet --version` → 10.x).
 
@@ -63,10 +64,10 @@ Dominio  <── AccesoDatos
    ↑             ↑
    └── DTOs  <── LogicaAplicacion
               ↑         ↑         ↑
-              └── Presentacion   WebApiLectura ──┐
+              └── PresentacionAdmin   WebApiLectura ──┐
                   (Admin, MVC)   (Web API, JWT)  │
                                                   │
-                                    DTOs  <── MvcLectura
+                                    DTOs  <── PresentacionUsuario
                                               (cliente, consume
                                                WebApiLectura por
                                                HttpClient)
@@ -86,11 +87,11 @@ Dominio  <── AccesoDatos
   `FromDTO`/`ToDTO` por entidad). `CapituloDTO` tiene `[JsonPolymorphic]`/
   `[JsonDerivedType]` (ver "Decisiones de dominio no obvias") para que `System.Text.Json`
   pueda serializar/deserializar `CapituloIntermedioDTO`/`CapituloFinalDTO` — lo necesita
-  tanto `WebApiLectura` como `MvcLectura`, que referencia este proyecto directo.
+  tanto `WebApiLectura` como `PresentacionUsuario`, que referencia este proyecto directo.
 - **AccesoDatos**: referencia solo a Dominio. Usa EF Core de verdad:
   `RepositorioEntityFramework/` (`HistoriasContext` + un `RepositorioXEF` por
   cada `IRepositorioX` de Dominio). `HistoriasContext` se registra con
-  `AddDbContext` en el `Program.cs` de `Presentacion` y de `WebApiLectura` (cadena de
+  `AddDbContext` en el `Program.cs` de `PresentacionAdmin` y de `WebApiLectura` (cadena de
   conexión `"ConnectionStrings:Historias"` en su `appsettings.json`) y cada repo lo
   recibe por constructor — mismo patrón que `RedSocialM3C`. Al ser scoped, todos los
   repos de un mismo pedido HTTP comparten el contexto. `RepositorioEnMemoria/`
@@ -107,7 +108,7 @@ Dominio  <── AccesoDatos
   `AgregarHistoriaCU` inyecta `IAgregarAuditoria` además de `IRepositorioHistoria`
   para auditar; `IniciarLecturaCU` inyecta `IRepositorioLectura` e
   `IRepositorioHistoria`).
-- **Presentacion**: Web MVC de **Administración** (`Microsoft.NET.Sdk.Web`),
+- **PresentacionAdmin**: Web MVC de **Administración** (`Microsoft.NET.Sdk.Web`),
   referencia las 4 capas de abajo. Un controller por entidad con repositorio propio,
   inyectando sus casos de uso. RF01-RF05. `AuditoriaController` no tiene alta manual
   (la auditoría la genera el sistema automáticamente). `Program.cs` registra ahí
@@ -115,7 +116,7 @@ Dominio  <── AccesoDatos
   `Filtros/RequiereSesionAttribute` (chequea `Session["UsuarioId"]`), **no**
   `[Authorize]` (ver RF01 más abajo).
 - **WebApiLectura**: Web API (`Microsoft.NET.Sdk.Web`), mismas 4 capas de abajo que
-  Presentacion. RF06-RF08 (y, a futuro, RF09-RF11). Login con JWT
+  PresentacionAdmin. RF06-RF08 (y, a futuro, RF09-RF11). Login con JWT
   (`Controllers/AuthController` + `TokenHandler/JWTHandler` estático, recibe
   `DTOs/LoginDTO`, devuelve `{ Token, Usuario }`), configurado en `Program.cs` con el
   paquete oficial `Microsoft.AspNetCore.Authentication.JwtBearer` — solo la clave en
@@ -125,7 +126,7 @@ Dominio  <── AccesoDatos
   (cualquier rol) o `[Authorize(Roles = "Administrador")]`/`[Authorize(Roles = "Lector")]`
   según corresponda — el `UsuarioId` siempre sale del claim del token
   (`ClaimTypes.NameIdentifier`), nunca de parámetros que mande el cliente.
-- **MvcLectura**: Web MVC **cliente** (`dotnet new mvc`), referencia **solo `DTOs`**
+- **PresentacionUsuario**: Web MVC **cliente** (`dotnet new mvc`), referencia **solo `DTOs`**
   (no Dominio/AccesoDatos/LogicaAplicacion — "exclusivamente presentación", consume
   `WebApiLectura` por `HttpClient` con nombre, URL base en `appsettings.json`
   `"WebApiLectura:BaseUrl"`). El token JWT se guarda en `Session` (mismo mecanismo que
@@ -139,7 +140,7 @@ Dominio  <── AccesoDatos
 **Estado actual (actualizado 10/10): RF01-RF08 funcionalmente completos** (Entregas
 2 y 3 cumplidas) **salvo el Delete de RF03** (salteado a pedido de la cátedra). Ver
 sección "Estado de avance" más abajo para el resumen por RF, y
-`notas-de-avance.md` (no commiteado, personal) para el detalle completo de bugs
+`notas/notas-de-avance.md` (no commiteado, personal) para el detalle completo de bugs
 encontrados y por qué se tomó cada decisión — ese documento es más granular que esta
 sección y se actualiza a medida que se cierra cada RF. Categoria/Lectura siguen con
 algunos stubs `NotImplementedException` fuera de lo que ya pide RF06-RF08 (ej.
@@ -152,7 +153,7 @@ estructura.
 El enunciado pide **dos soluciones .NET independientes**: una app de Administración
 (Web MVC, RF01-RF05, sin Web API) y una app de Lectura (Web API con JWT para
 RF01+RF06-RF11, más un MVC cliente que la consume por HttpClient para RF12). Hoy
-los tres proyectos (`Presentacion`, `WebApiLectura`, `MvcLectura`) ya existen y
+los tres proyectos (`PresentacionAdmin`, `WebApiLectura`, `PresentacionUsuario`) ya existen y
 funcionan con esa separación de responsabilidades, pero **todavía viven en una sola
 solución** (`Obligatorio.slnx`) — separarlos en dos `.slnx`/carpetas distintas queda
 pendiente, no es parte de ningún RF puntual, se puede dejar para más cerca de la
@@ -213,7 +214,7 @@ entrega final.
   `[JsonDerivedType(...)]` (`DTOs/DTOs/CapituloDTO.cs`). Sin esto, `System.Text.Json`
   no solo serializa mal un tipo abstracto (pierde `Opciones`/`ContadorAlcances`),
   directamente **no puede deserializarlo** — tira `NotSupportedException` apenas un
-  cliente (como `MvcLectura`) intenta leer una respuesta de la Web API que incluya
+  cliente (como `PresentacionUsuario`) intenta leer una respuesta de la Web API que incluya
   capítulos. El campo `"tipo"` nuevo en el JSON (`"intermedio"`/`"final"`) le dice
   al deserializador qué subtipo armar.
 - **Convención de código: evitar `var`**, usar el tipo explícito salvo que no
@@ -221,14 +222,14 @@ entrega final.
   aplicado en todo el proyecto (no solo en código nuevo).
 - **Comentarios en el código: una línea, qué hace, no por qué** — no reproducir
   ahí el razonamiento/la historia de cómo se llegó a una decisión (eso va en
-  `notas-de-avance.md`, no en el código fuente). Aplica a todo el proyecto.
+  `notas/notas-de-avance.md`, no en el código fuente). Aplica a todo el proyecto.
 
 ## Estado de avance (actualizado 10/10/2026)
 
 Contexto para retomar: esta sección se actualiza a medida que se avanza, para que
 una sesión nueva sepa exactamente dónde se quedó sin tener que releer todo el
 historial de git ni el chat. Para el detalle fino de cada bug encontrado y cada
-decisión de diseño (con el *por qué*, no solo el *qué*), ver `notas-de-avance.md`
+decisión de diseño (con el *por qué*, no solo el *qué*), ver `notas/notas-de-avance.md`
 (no commiteado — documento personal para repasar antes de la defensa, pero vale la
 pena abrirlo si hace falta contexto que esta sección resume de más).
 
@@ -252,7 +253,7 @@ Editar/Eliminar/Detalles — no pedidos por RF02. Usuario de prueba real:
 
 ### RF03 — Gestión de historias: completo (menos Delete)
 
-CRUD sin Delete (salteado a pedido de la cátedra). Ver `notas-rf03-para-defensa.md`
+CRUD sin Delete (salteado a pedido de la cátedra). Ver `notas/notas-rf03-para-defensa.md`
 para el detalle de mappers/excepciones/caso de uso de creación.
 
 ### RF04 — Alta de capítulos: completo
@@ -303,8 +304,8 @@ fácil de pifiar (401 sin explicación aparente).
 - Endpoints en `WebApiLectura/Controllers/LecturaController`
   (`[Authorize(Roles = "Lector")]`): `Iniciar`, `{id}/Avanzar`, `{id}` (GET, con
   chequeo de pertenencia en el controller — el CU `IObtenerLecturaPorId` es
-  genérico y también lo usa `Presentacion` sin esa noción).
-- Cliente MVC (`MvcLectura`): `HistoriaController` (listado + detalle, con botón
+  genérico y también lo usa `PresentacionAdmin` sin esa noción).
+- Cliente MVC (`PresentacionUsuario`): `HistoriaController` (listado + detalle, con botón
   "Comenzar a leer") y `LecturaController` (`Iniciar`/`Leer`/`Avanzar`). Como
   `LecturaDTO` solo trae `CapituloActualId`, la pantalla de lectura pide también la
   `Historia` completa y busca el capítulo por Id (`LeerViewModel`). Vista
@@ -324,9 +325,9 @@ con selector de mes/año y el mensaje cuando no hay resultados.
 ### Pendiente
 
 - RF09-RF11 (rankings/métricas, lado Administrador — van también en `WebApiLectura`
-  + `MvcLectura`, no en `Presentacion`, según el enunciado).
+  + `PresentacionUsuario`, no en `PresentacionAdmin`, según el enunciado).
 - RF12 (estilos de lectura) y RF05 de la segunda tanda del enunciado (investigación
-  con IA, documentar aparte) — necesitan que `MvcLectura` ya tenga pantallas para
+  con IA, documentar aparte) — necesitan que `PresentacionUsuario` ya tenga pantallas para
   aplicarles el tema.
 - Separar la solución en dos `.slnx` (Administración / Lectura), si se decide
   hacerlo antes de la entrega final.
@@ -334,7 +335,7 @@ con selector de mes/año y el mensaje cuando no hay resultados.
 
 ## EF Core / base de datos
 
-Cadena de conexión en `appsettings.json` de `Presentacion` y de `WebApiLectura`
+Cadena de conexión en `appsettings.json` de `PresentacionAdmin` y de `WebApiLectura`
 (`"ConnectionStrings:Historias"`, `(localdb)\MsSqlLocalDb`, base `HistoriasDB`),
 registrada con `AddDbContext` (ver AccesoDatos arriba). `dotnet-ef` como herramienta local
 (`dotnet-tools.json`, generado con `dotnet new tool-manifest` — **no commiteado
@@ -345,7 +346,7 @@ Migraciones aplicadas (orden): `Init`, `CapituloInicialIdNullable`,
 RF07). Para levantar la base desde cero en una PC nueva:
 ```
 dotnet tool restore
-dotnet ef database update --project src/AccesoDatos/AccesoDatos.csproj --startup-project src/Presentacion/Presentacion.csproj
+dotnet ef database update --project src/AccesoDatos/AccesoDatos.csproj --startup-project src/PresentacionAdmin/PresentacionAdmin.csproj
 ```
 El `--startup-project` es obligatorio desde que el contexto se configura por DI: sin
 él, `dotnet ef` no encuentra la cadena de conexión ("Unable to create a 'DbContext'").
@@ -369,14 +370,20 @@ LocalDB de verdad, no solo que compile, ni bien algo encadena varias entidades).
 - **`CLAUDE.md` SÍ se sube al repo** (decisión del 17/9: se commitea a propósito
   para que el compañero lo tenga como contexto y se lo pueda pasar a su propia
   IA).
-- **Notas personales sueltas, en la raíz del repo, nunca commiteadas**:
-  `notas-rf03-para-defensa.md`, `notas-de-avance.md` (documento vivo, se actualiza
-  al cerrar cada RF — bugs encontrados, decisiones, con el *por qué*),
-  `preguntas-para-el-profe.md` (dudas para la próxima clase, ej. la de
+- **Notas personales, en la carpeta `notas/` (desde el 30/10, antes sueltas en la
+  raíz), nunca commiteadas**: `notas/notas-rf03-para-defensa.md`,
+  `notas/notas-de-avance.md` (documento vivo para estudiar para la defensa: al cerrar
+  cada RF se anota qué pide, el flujo de punta a punta — vista → controller →
+  API → caso de uso → repositorio — las decisiones y los bugs, con el *por qué*),
+  `notas/preguntas-para-el-profe.md` (dudas para la próxima clase, ej. la de
   polimorfismo en JSON, ya resuelta por nuestra cuenta pero documentada ahí por si
   el profe muestra otra forma). Mismo criterio para cualquier nota nueva de este
-  tipo: se crea suelta en la raíz, no se agrega al commit salvo que se pida
+  tipo: se crea en `notas/`, no se agrega al commit salvo que se pida
   explícitamente.
+- **Antes de implementar cada RF, mirar cómo lo resuelve el profe en
+  `RedSocialM3C/`** (y sincronizarlo si hay commits nuevos) para seguir el mismo
+  estilo de clase. Avanzar de a un RF por vez, explicando, para que el usuario lo
+  entienda.
 - Hay compañero (Bruno) trabajando en el mismo repo, directo a `master`. El
   trabajo de RF04-RF08 de esta sesión (y el de RF03 de una sesión anterior) se
   pusheó a **`feature/estructura-proyecto`** (rama del usuario), no a `master` —
@@ -393,8 +400,9 @@ LocalDB de verdad, no solo que compile, ni bien algo encadena varias entidades).
   `git clone`.
 - `RedSocialM3C/` y cualquier archivo suelto ajeno al obligatorio (fotos,
   material de teórico) quedan fuera de los commits de este repo.
-- `Obligatorio-P3-BF366724-EA293522.zip` (42MB) quedó commiteado por error hace
-  tiempo, el usuario pidió dejarlo así por ahora, no tocarlo.
+- `Obligatorio-P3-BF366724-EA293522.zip` (42MB) era una versión vieja de la entrega:
+  el usuario la borró del working tree a propósito (30/10). Se va a generar uno nuevo
+  más adelante, no restaurarlo.
 
 ## Otras notas sueltas
 
