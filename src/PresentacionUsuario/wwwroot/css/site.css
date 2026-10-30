@@ -1,8 +1,9 @@
 /* =====================================================================
    Tema oscuro, mate y monocromático — Obligatorio P3
-   Ruta: src/Presentacion/wwwroot/css/site.css
+   Ruta: src/PresentacionUsuario/wwwroot/css/site.css
    Base: Bootstrap 5.3. Se pisan sus variables en vez de reescribir todo.
    Generado con IA (Claude) — documentar en el apartado de uso de IA.
+   RF12: el oscuro es el estilo base; html[data-bs-theme="light"] activa el claro.
    ===================================================================== */
 
 :root {
@@ -17,11 +18,40 @@
     --superficie: var(--prussian-blue);
     --borde: var(--charcoal-blue);
     --texto: var(--lavender);
+    --barra: var(--black);
+    --acento: var(--lavender);
+    --boton-bg: var(--charcoal-blue);
+    --boton-texto: var(--lavender);
+    --boton-hover-bg: var(--lavender);
+    --boton-hover-texto: var(--ink-black);
+    --foco-rgb: 204, 201, 220;
     /* Tonos derivados (mezclas de la misma paleta, siguen siendo monocromos) */
-    --texto-suave: color-mix(in srgb, var(--lavender) 75%, var(--ink-black));
-    --borde-campo: color-mix(in srgb, var(--lavender) 50%, var(--ink-black));
+    --texto-suave: color-mix(in srgb, var(--texto) 75%, var(--fondo));
+    --borde-campo: color-mix(in srgb, var(--texto) 50%, var(--fondo));
     color-scheme: dark; /* scrollbars y listas desplegables nativas oscuras */
     /* Variables de Bootstrap */
+    --bs-body-bg: var(--fondo);
+    --bs-body-color: var(--texto);
+    --bs-secondary-color: var(--texto-suave);
+    --bs-border-color: var(--borde);
+}
+
+/* ---------- Estilo claro (RF12): misma paleta, roles invertidos ---------- */
+html[data-bs-theme="light"] {
+    --fondo: #f4f3f8;
+    --superficie: #ffffff;
+    --borde: var(--lavender);
+    --texto: var(--ink-black);
+    --barra: #e6e4ef;
+    --acento: var(--charcoal-blue);
+    --boton-bg: var(--charcoal-blue);
+    --boton-texto: #ffffff;
+    --boton-hover-bg: var(--prussian-blue);
+    --boton-hover-texto: #ffffff;
+    --foco-rgb: 50, 74, 95;
+    --texto-suave: color-mix(in srgb, var(--texto) 70%, var(--fondo));
+    --borde-campo: color-mix(in srgb, var(--texto) 35%, var(--fondo));
+    color-scheme: light;
     --bs-body-bg: var(--fondo);
     --bs-body-color: var(--texto);
     --bs-secondary-color: var(--texto-suave);
@@ -57,11 +87,11 @@ a {
 }
 
     a:hover {
-        text-decoration-color: var(--lavender);
+        text-decoration-color: var(--acento);
     }
 
 :focus-visible {
-    outline: 2px solid var(--lavender);
+    outline: 2px solid var(--acento);
     outline-offset: 2px;
 }
 
@@ -78,7 +108,7 @@ dt {
 /* ---------- Navbar y footer ---------- */
 /* !important porque el Layout usa bg-white / text-dark (que son !important en Bootstrap) */
 header .navbar {
-    background-color: var(--black) !important;
+    background-color: var(--barra) !important;
     border-bottom: 1px solid var(--borde) !important;
 }
 
@@ -96,12 +126,41 @@ header .navbar {
     color: var(--texto-suave) !important;
 }
 
-.navbar-toggler {
-    border-color: var(--borde-campo);
+/* Encabezado en 3 columnas: botones | titulo centrado | usuario y botones */
+.encabezado {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: .75rem;
 }
 
-.navbar-toggler-icon {
-    filter: invert(1);
+.encabezado-izquierda,
+.encabezado-derecha {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+}
+
+.encabezado-derecha {
+    justify-content: flex-end;
+}
+
+/* Pantallas chicas: una columna, todo centrado */
+@media (max-width: 767px) {
+    .encabezado {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .encabezado-izquierda,
+    .encabezado-derecha {
+        justify-content: center;
+    }
+
+    .encabezado .navbar-brand {
+        order: -1;
+    }
 }
 
 .footer {
@@ -129,7 +188,7 @@ footer a {
 }
 
     .table > thead > tr > th {
-        background-color: var(--black);
+        background-color: var(--barra);
         font-weight: 600;
     }
 
@@ -147,7 +206,8 @@ footer a {
         margin-bottom: .35rem;
     }
 
-.form-control {
+.form-control,
+.form-select {
     background-color: var(--fondo);
     border: 1px solid var(--borde-campo);
     color: var(--texto);
@@ -157,9 +217,10 @@ footer a {
         color: var(--texto-suave);
     }
 
-    .form-control:focus {
+    .form-control:focus,
+    .form-select:focus {
         background-color: var(--fondo);
-        border-color: var(--lavender);
+        border-color: var(--acento);
         color: var(--texto);
         box-shadow: 0 0 0 3px var(--borde);
     }
@@ -171,11 +232,11 @@ footer a {
 
     .form-check-input:checked {
         background-color: var(--borde);
-        border-color: var(--lavender);
+        border-color: var(--acento);
     }
 
     .form-check-input:focus {
-        border-color: var(--lavender);
+        border-color: var(--acento);
         box-shadow: 0 0 0 3px var(--borde);
     }
 
@@ -189,8 +250,8 @@ footer a {
 }
 
 .validation-summary-errors {
-    background-color: var(--black);
-    border-left: 4px solid var(--lavender);
+    background-color: var(--barra);
+    border-left: 4px solid var(--acento);
     padding: .75rem 1rem;
     margin-bottom: 1rem;
 }
@@ -206,19 +267,19 @@ footer a {
 }
 
 .btn-primary {
-    --bs-btn-color: var(--lavender);
-    --bs-btn-bg: var(--charcoal-blue);
-    --bs-btn-border-color: var(--charcoal-blue);
-    --bs-btn-hover-color: var(--ink-black);
-    --bs-btn-hover-bg: var(--lavender);
-    --bs-btn-hover-border-color: var(--lavender);
-    --bs-btn-active-color: var(--ink-black);
-    --bs-btn-active-bg: var(--lavender);
-    --bs-btn-active-border-color: var(--lavender);
-    --bs-btn-focus-shadow-rgb: 204, 201, 220;
-    --bs-btn-disabled-color: var(--lavender);
-    --bs-btn-disabled-bg: var(--charcoal-blue);
-    --bs-btn-disabled-border-color: var(--charcoal-blue);
+    --bs-btn-color: var(--boton-texto);
+    --bs-btn-bg: var(--boton-bg);
+    --bs-btn-border-color: var(--boton-bg);
+    --bs-btn-hover-color: var(--boton-hover-texto);
+    --bs-btn-hover-bg: var(--boton-hover-bg);
+    --bs-btn-hover-border-color: var(--boton-hover-bg);
+    --bs-btn-active-color: var(--boton-hover-texto);
+    --bs-btn-active-bg: var(--boton-hover-bg);
+    --bs-btn-active-border-color: var(--boton-hover-bg);
+    --bs-btn-focus-shadow-rgb: var(--foco-rgb);
+    --bs-btn-disabled-color: var(--boton-texto);
+    --bs-btn-disabled-bg: var(--boton-bg);
+    --bs-btn-disabled-border-color: var(--boton-bg);
 }
 
 .btn-outline-secondary {
@@ -230,7 +291,7 @@ footer a {
     --bs-btn-active-color: var(--texto);
     --bs-btn-active-bg: var(--borde);
     --bs-btn-active-border-color: var(--borde-campo);
-    --bs-btn-focus-shadow-rgb: 204, 201, 220;
+    --bs-btn-focus-shadow-rgb: var(--foco-rgb);
     --bs-btn-disabled-color: var(--texto-suave);
     --bs-btn-disabled-border-color: var(--borde);
 }

@@ -61,6 +61,7 @@ public class AuthController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+
     public ActionResult Logout()
     {
         HttpContext.Session.Clear();
