@@ -116,7 +116,7 @@ Dominio  <── AccesoDatos
   `Filtros/RequiereSesionAttribute` (chequea `Session["UsuarioId"]`), **no**
   `[Authorize]` (ver RF01 más abajo).
 - **WebApiLectura**: Web API (`Microsoft.NET.Sdk.Web`), mismas 4 capas de abajo que
-  PresentacionAdmin. RF06-RF09 (y, a futuro, RF10-RF11). Login con JWT
+  PresentacionAdmin. RF06-RF10 (y, a futuro, RF11). Login con JWT
   (`Controllers/AuthController` + `TokenHandler/JWTHandler` estático, recibe
   `DTOs/LoginDTO`, devuelve `{ Token, Usuario }`), configurado en `Program.cs` con el
   paquete oficial `Microsoft.AspNetCore.Authentication.JwtBearer` — solo la clave en
@@ -334,10 +334,20 @@ api/Estadistica/HistoriasMasLeidas` en `WebApiLectura/Controllers/EstadisticaCon
 da 403). El menú de `_Layout` depende de `Session["Rol"]`: el Administrador ve "Más
 leídas" y el Lector "Mi historial".
 
+### RF10 — Final más alcanzado por historia: completo (API + cliente MVC)
+
+Usa `CapituloFinal.ContadorAlcances` (no cuenta lecturas), así aparecen también los
+finales con 0. `EncontrarAlcancesDeFinalesCU` (`CasosDeUso/Historias/`, usa
+`IRepositorioHistoria.FindByID`): `Capitulos.OfType<CapituloFinal>()`, marca
+`EsMasFrecuente` en todos los que empatan en el máximo, y en ninguno si el máximo es 0
+→ `AlcanceFinalDTO`. Endpoint `GET api/Estadistica/FinalesPorHistoria/{historiaId}`
+(404 si la historia no existe). Cliente: `Estadistica/FinalesPorHistoria?historiaId=`
+con combo de historias publicadas (`FinalesPorHistoriaViewModel`).
+
 ### Pendiente
 
-- RF10-RF11 (métricas, lado Administrador): van en `EstadisticaController` de
-  `WebApiLectura` + `PresentacionUsuario`, no en `PresentacionAdmin`, según el enunciado.
+- RF11 (usuarios con más historias distintas completadas, lado Administrador): va en
+  `EstadisticaController` de `WebApiLectura` + `PresentacionUsuario`.
 - RF12 (estilos de lectura) y RF05 de la segunda tanda del enunciado (investigación
   con IA, documentar aparte) — necesitan que `PresentacionUsuario` ya tenga pantallas para
   aplicarles el tema.

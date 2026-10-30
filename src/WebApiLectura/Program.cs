@@ -91,6 +91,7 @@ builder.Services.AddScoped<IObtenerHistoriaPorId, ObtenerHistoriaPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodasHistorias, EncontrarTodasHistoriasCU>();
 builder.Services.AddScoped<IEditarHistoria, EditarHistoriaCU>();
 builder.Services.AddScoped<IEncontrarHistoriasPublicadas, EncontrarHistoriasPublicadasCU>();
+builder.Services.AddScoped<IEncontrarAlcancesDeFinales, EncontrarAlcancesDeFinalesCU>();
 
 builder.Services.AddScoped<IAgregarLectura, AgregarLecturaCU>();
 builder.Services.AddScoped<IObtenerLecturaPorId, ObtenerLecturaPorIdCU>();
