@@ -115,46 +115,4 @@ public class UsuarioController : Controller
             return View(usuario);
         }
     }
-
-    [RequiereSesion]
-    public ActionResult Edit(int id)
-    {
-        return View();
-    }
-
-    [RequiereSesion]
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public ActionResult Edit(int id, IFormCollection collection)
-    {
-        try
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            return View();
-        }
-    }
-
-    [RequiereSesion]
-    public ActionResult Delete(int id)
-    {
-        return View();
-    }
-
-    [RequiereSesion]
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public ActionResult Delete(int id, IFormCollection collection)
-    {
-        try
-        {
-            return RedirectToAction(nameof(Index));
-        }
-        catch
-        {
-            return View();
-        }
-    }
 }

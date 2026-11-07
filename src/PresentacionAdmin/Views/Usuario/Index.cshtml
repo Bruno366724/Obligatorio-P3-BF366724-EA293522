@@ -32,7 +32,7 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (DTOs.DTOs.UsuarioDTO item in Model) {
         <tr>
             <td>
                 @Html.DisplayFor(modelItem => item.Id)
@@ -50,9 +50,7 @@
                 @Html.DisplayFor(modelItem => item.Rol)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new { }) |
-                @Html.ActionLink("Details", "Details", new { }) |
-                @Html.ActionLink("Delete", "Delete", new { })
+                <a asp-action="Details" asp-route-id="@item.Id">Detalles</a>
             </td>
         </tr>
 }

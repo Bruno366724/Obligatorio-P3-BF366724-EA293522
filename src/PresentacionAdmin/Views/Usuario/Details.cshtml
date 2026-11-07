@@ -1,0 +1,27 @@
+@model DTOs.DTOs.UsuarioDTO
+
+@{
+    ViewData["Title"] = "Detalle de usuario";
+}
+
+<h1>Detalle de usuario</h1>
+
+<div class="card p-4">
+<dl class="row">
+    <dt class="col-sm-2">Nombre completo</dt>
+    <dd class="col-sm-10">@Model.NombreCompleto</dd>
+
+    <dt class="col-sm-2">Email</dt>
+    <dd class="col-sm-10">@Model.Email</dd>
+
+    <dt class="col-sm-2">Nombre de usuario</dt>
+    <dd class="col-sm-10">@Model.NombreUsuario</dd>
+
+    <dt class="col-sm-2">Rol</dt>
+    <dd class="col-sm-10">@Model.Rol</dd>
+</dl>
+</div>
+
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
+</div>
