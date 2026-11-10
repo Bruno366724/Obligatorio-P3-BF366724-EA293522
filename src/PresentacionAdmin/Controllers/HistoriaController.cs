@@ -19,6 +19,7 @@ public class HistoriaController : Controller
     private readonly IEncontrarTodasCategorias encontrarTodasCategorias;
     private readonly IAgregarCapitulo agregarCapitulo;
     private readonly IEliminarHistoria eliminarHistoria;
+    private readonly IAgregarOpcion agregarOpcion;
 
     public HistoriaController(
         IAgregarHistoria agregarHistoriaCu,
@@ -27,7 +28,8 @@ public class HistoriaController : Controller
         IEditarHistoria editarHistoriaCu,
         IEncontrarTodasCategorias encontrarTodasCategoriasCu,
         IAgregarCapitulo agregarCapituloCu,
-        IEliminarHistoria eliminarHistoriaCu)
+        IEliminarHistoria eliminarHistoriaCu,
+        IAgregarOpcion agregarOpcionCu)
     {
         agregarHistoria = agregarHistoriaCu;
         obtenerHistoriaPorId = obtenerHistoriaPorIdCu;
@@ -36,6 +38,7 @@ public class HistoriaController : Controller
         encontrarTodasCategorias = encontrarTodasCategoriasCu;
         agregarCapitulo = agregarCapituloCu;
         eliminarHistoria = eliminarHistoriaCu;
+        agregarOpcion = agregarOpcionCu;
     }
 
     // Usuario logueado, para los casos de uso que auditan.
@@ -246,6 +249,59 @@ public class HistoriaController : Controller
         {
             ModelState.AddModelError(string.Empty, "Error inesperado al agregar el capítulo, vuelva a intentar.");
             return AgregarCapitulo(dto.HistoriaId, dto.CapituloAntecedenteId);
+        }
+    }
+    // Enlaza un capitulo intermedio con otro capitulo ya existente de la misma historia.
+    public ActionResult AgregarOpcion(int historiaId, int capituloOrigenId)
+    {
+        try
+        {
+            HistoriaDTO historia = obtenerHistoriaPorId.Ejecutar(historiaId);
+            CapituloIntermedioDTO origen = historia.Capitulos.OfType<CapituloIntermedioDTO>()
+                .First(capitulo => capitulo.Id == capituloOrigenId);
+
+            ViewBag.HistoriaId = historiaId;
+            ViewBag.HistoriaTitulo = historia.Titulo;
+            ViewBag.CapituloOrigenId = capituloOrigenId;
+            ViewBag.CapituloOrigenTitulo = origen.Titulo;
+            // Candidatos: todos menos el origen, el inicial y los que ya son destino del origen.
+            ViewBag.Destinos = historia.Capitulos
+                .Where(capitulo => capitulo.Id != capituloOrigenId
+                    && capitulo.Id != historia.CapituloInicialId
+                    && origen.Opciones.All(opcion => opcion.CapituloDestinoId != capitulo.Id))
+                .ToList();
+            return View();
+        }
+        catch (HistoriaException hex)
+        {
+            TempData["Error"] = hex.Message;
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            TempData["Error"] = "No se encontró el capítulo intermedio indicado en esta historia.";
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public ActionResult AgregarOpcion(AgregarOpcionDTO dto)
+    {
+        try
+        {
+            agregarOpcion.Ejecutar(dto, AdministradorId);
+            return RedirectToAction(nameof(Details), new { id = dto.HistoriaId });
+        }
+        catch (HistoriaException hex)
+        {
+            ModelState.AddModelError(string.Empty, hex.Message);
+            return AgregarOpcion(dto.HistoriaId, dto.CapituloOrigenId);
+        }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "Error inesperado al agregar la opción, vuelva a intentar.");
+            return AgregarOpcion(dto.HistoriaId, dto.CapituloOrigenId);
         }
     }
 }

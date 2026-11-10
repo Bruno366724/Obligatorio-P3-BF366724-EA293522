@@ -35,6 +35,10 @@
                        class="btn btn-sm btn-outline-secondary ms-2">
                         Agregar capítulo siguiente
                     </a>
+                    <a asp-action="AgregarOpcion" asp-route-historiaId="@Model.Id" asp-route-capituloOrigenId="@capitulo.Id"
+                       class="btn btn-sm btn-outline-secondary ms-1">
+                        Enlazar a capítulo existente
+                    </a>
                 }
             </li>
 }

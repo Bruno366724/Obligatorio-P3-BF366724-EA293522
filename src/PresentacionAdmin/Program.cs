@@ -45,6 +45,7 @@ builder.Services.AddScoped<IEncontrarTodasHistorias, EncontrarTodasHistoriasCU>(
 builder.Services.AddScoped<IEditarHistoria, EditarHistoriaCU>();
 builder.Services.AddScoped<IEliminarHistoria, EliminarHistoriaCU>();
 builder.Services.AddScoped<IAgregarCapitulo, AgregarCapituloCU>();
+builder.Services.AddScoped<IAgregarOpcion, AgregarOpcionCU>();
 
 builder.Services.AddScoped<IAgregarLectura, AgregarLecturaCU>();
 builder.Services.AddScoped<IObtenerLecturaPorId, ObtenerLecturaPorIdCU>();

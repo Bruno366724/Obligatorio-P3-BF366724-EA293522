@@ -1,0 +1,60 @@
+@{
+    ViewData["Title"] = "Enlazar capítulo existente";
+    int historiaId = ViewBag.HistoriaId;
+    int capituloOrigenId = ViewBag.CapituloOrigenId;
+    string historiaTitulo = ViewBag.HistoriaTitulo;
+    string capituloOrigenTitulo = ViewBag.CapituloOrigenTitulo;
+    List<DTOs.DTOs.CapituloDTO> destinos = ViewBag.Destinos;
+}
+
+<div class="d-flex justify-content-center mt-4">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6">
+        <div class="card p-4">
+            <h1 class="h3 mb-1 text-center">Enlazar capítulo existente</h1>
+            <p class="text-muted text-center mb-4">
+                Historia: <strong>@historiaTitulo</strong><br />
+                Desde: <strong>@capituloOrigenTitulo</strong>
+            </p>
+            @if (destinos.Count == 0)
+            {
+                <p class="text-muted">No hay otros capítulos de esta historia a los que se pueda enlazar.</p>
+            }
+            else
+            {
+                <form asp-action="AgregarOpcion" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <input type="hidden" name="historiaId" value="@historiaId" />
+                    <input type="hidden" name="capituloOrigenId" value="@capituloOrigenId" />
+
+                    <div class="form-group">
+                        <label for="capituloDestinoId">Capítulo destino</label>
+                        <select name="capituloDestinoId" id="capituloDestinoId" class="form-select">
+                            @foreach (DTOs.DTOs.CapituloDTO capitulo in destinos)
+                            {
+                                <option value="@capitulo.Id">@capitulo.Titulo (@(capitulo is DTOs.DTOs.CapituloFinalDTO ? "final" : "intermedio"))</option>
+                            }
+                        </select>
+                    </div>
+
+                    <hr />
+                    <p class="text-muted">
+                        Al capítulo "@capituloOrigenTitulo" se le va a crear una opción con este texto,
+                        que lleva al capítulo elegido.
+                    </p>
+                    <div class="form-group">
+                        <label for="textoOpcion">Texto de la opción</label>
+                        <input name="textoOpcion" id="textoOpcion" class="form-control" />
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <input type="submit" value="Enlazar" class="btn btn-primary w-100" />
+                    </div>
+                </form>
+            }
+        </div>
+        <div class="text-center mt-3">
+            <a asp-action="Details" asp-route-id="@historiaId">Volver a la historia</a>
+        </div>
+    </div>
+</div>
