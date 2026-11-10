@@ -36,12 +36,16 @@ public class AuditoriaController : Controller
         encontrarTodosUsuarios = encontrarTodosUsuariosCu;
     }
 
-    // Filtro opcional por historia o por administrador; sin ninguno, lista todas.
+    // Filtro opcional por historia, por administrador o por ambos; sin ninguno, lista todas.
     public ActionResult Index(int? historiaId, int? administradorId)
     {
         List<AuditoriaDTO> auditorias;
         if (historiaId.HasValue)
+        {
             auditorias = encontrarAuditoriasPorHistoria.Ejecutar(historiaId.Value);
+            if (administradorId.HasValue)
+                auditorias = auditorias.Where(auditoria => auditoria.AdministradorId == administradorId.Value).ToList();
+        }
         else if (administradorId.HasValue)
             auditorias = encontrarAuditoriasPorAdministrador.Ejecutar(administradorId.Value);
         else
