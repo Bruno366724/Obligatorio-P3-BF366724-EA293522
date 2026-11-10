@@ -19,18 +19,18 @@ public class AgregarCapituloCU : IAgregarCapitulo
         agregarAuditoria = agregarAuditoriaCu;
     }
 
-    public void Ejecutar(int historiaId, int capituloAntecedenteId, bool esFinal, string titulo, string texto, string textoOpcion, int administradorId)
+    public void Ejecutar(AgregarCapituloDTO dto, int administradorId)
     {
-        Historia historia = repositorio.FindByID(historiaId);
+        Historia historia = repositorio.FindByID(dto.HistoriaId);
         if (historia is null)
             throw new HistoriaNoEncontradaException("No se encontró la historia solicitada.");
 
         // Un intermedio nace sin opciones: dejaria invalida una historia ya publicada.
-        if (!esFinal && historia.Estado == EstadoHistoria.Publicada)
+        if (!dto.EsFinal && historia.Estado == EstadoHistoria.Publicada)
             throw new HistoriaException("No se puede agregar un capítulo intermedio a una historia publicada. Pasala a Borrador desde Editar, completala y volvé a publicarla.");
 
         // El antecedente tiene que ser un capitulo de esta misma historia, de tipo intermedio.
-        Capitulo antecedente = historia.Capitulos.FirstOrDefault(capitulo => capitulo.Id == capituloAntecedenteId);
+        Capitulo antecedente = historia.Capitulos.FirstOrDefault(capitulo => capitulo.Id == dto.CapituloAntecedenteId);
         if (antecedente is null)
             throw new HistoriaException("El capítulo antecedente no pertenece a esta historia.");
 
@@ -38,19 +38,19 @@ public class AgregarCapituloCU : IAgregarCapitulo
             throw new HistoriaException("Solo se pueden agregar capítulos a continuación de un capítulo intermedio.");
 
         // Capitulo nuevo (sin validar completo todavia si es intermedio: nace sin opciones).
-        Capitulo nuevoCapitulo = esFinal
-            ? new CapituloFinal { Titulo = titulo, Texto = texto, HistoriaId = historia.Id }
-            : new CapituloIntermedio { Titulo = titulo, Texto = texto, HistoriaId = historia.Id };
+        Capitulo nuevoCapitulo = dto.EsFinal
+            ? new CapituloFinal { Titulo = dto.Titulo, Texto = dto.Texto, HistoriaId = historia.Id }
+            : new CapituloIntermedio { Titulo = dto.Titulo, Texto = dto.Texto, HistoriaId = historia.Id };
 
-        if (esFinal)
+        if (dto.EsFinal)
             nuevoCapitulo.Validar();
-        else if (string.IsNullOrWhiteSpace(titulo) || string.IsNullOrWhiteSpace(texto))
+        else if (string.IsNullOrWhiteSpace(dto.Titulo) || string.IsNullOrWhiteSpace(dto.Texto))
             throw new HistoriaException("El título y el texto del capítulo son obligatorios.");
 
         historia.Capitulos.Add(nuevoCapitulo);
 
         // Opcion nueva en el antecedente, apuntando al capitulo nuevo.
-        Opcion nuevaOpcion = new Opcion { Texto = textoOpcion, CapituloDestino = nuevoCapitulo };
+        Opcion nuevaOpcion = new Opcion { Texto = dto.TextoOpcion, CapituloDestino = nuevoCapitulo };
         nuevaOpcion.Validar();
         capituloIntermedioAntecedente.Opciones.Add(nuevaOpcion);
 

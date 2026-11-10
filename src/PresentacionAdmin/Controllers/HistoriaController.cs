@@ -230,23 +230,22 @@ public class HistoriaController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult AgregarCapitulo(int historiaId, int capituloAntecedenteId, bool esFinal,
-        string titulo, string texto, string textoOpcion)
+    public ActionResult AgregarCapitulo(AgregarCapituloDTO dto)
     {
         try
         {
-            agregarCapitulo.Ejecutar(historiaId, capituloAntecedenteId, esFinal, titulo, texto, textoOpcion, AdministradorId);
-            return RedirectToAction(nameof(Details), new { id = historiaId });
+            agregarCapitulo.Ejecutar(dto, AdministradorId);
+            return RedirectToAction(nameof(Details), new { id = dto.HistoriaId });
         }
         catch (HistoriaException hex)
         {
             ModelState.AddModelError(string.Empty, hex.Message);
-            return AgregarCapitulo(historiaId, capituloAntecedenteId);
+            return AgregarCapitulo(dto.HistoriaId, dto.CapituloAntecedenteId);
         }
         catch
         {
             ModelState.AddModelError(string.Empty, "Error inesperado al agregar el capítulo, vuelva a intentar.");
-            return AgregarCapitulo(historiaId, capituloAntecedenteId);
+            return AgregarCapitulo(dto.HistoriaId, dto.CapituloAntecedenteId);
         }
     }
 }
