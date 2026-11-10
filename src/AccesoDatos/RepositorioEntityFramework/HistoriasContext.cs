@@ -58,6 +58,19 @@ namespace AccesoDatos.RepositorioEntityFramework
                 .WithMany()
                 .HasForeignKey(l => l.FinalAlcanzadoId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            // La auditoria sobrevive a la baja de su historia: el repositorio pone las FKs en null.
+            modelBuilder.Entity<Auditoria>()
+                .HasOne(a => a.Historia)
+                .WithMany()
+                .HasForeignKey(a => a.HistoriaId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
+
+            modelBuilder.Entity<Auditoria>()
+                .HasOne(a => a.Capitulo)
+                .WithMany()
+                .HasForeignKey(a => a.CapituloId)
+                .OnDelete(DeleteBehavior.ClientSetNull);
         }
     }
 }

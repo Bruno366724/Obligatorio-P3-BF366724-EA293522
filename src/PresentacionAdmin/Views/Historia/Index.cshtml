@@ -29,7 +29,8 @@
             <td>@string.Join(", ", historia.Categorias.Select(c => c.Nombre))</td>
             <td>
                 <a asp-action="Details" asp-route-id="@historia.Id">Detalles</a> |
-                <a asp-action="Edit" asp-route-id="@historia.Id">Editar</a>
+                <a asp-action="Edit" asp-route-id="@historia.Id">Editar</a> |
+                <a asp-action="Delete" asp-route-id="@historia.Id">Eliminar</a>
             </td>
         </tr>
 }

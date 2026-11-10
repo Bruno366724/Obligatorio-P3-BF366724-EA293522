@@ -24,7 +24,7 @@ public class IniciarLecturaCU : IIniciarLectura
     {
         Historia historia = repositorioHistoria.FindByID(historiaId);
         if (historia is null)
-            throw new LecturaException("No se encontró la historia solicitada.");
+            throw new HistoriaNoEncontradaException("No se encontró la historia solicitada.");
 
         if (historia.Estado != EstadoHistoria.Publicada)
             throw new LecturaException("Solo se pueden leer historias publicadas.");

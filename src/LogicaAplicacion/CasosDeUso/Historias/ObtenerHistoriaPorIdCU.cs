@@ -20,7 +20,7 @@ public class ObtenerHistoriaPorIdCU : IObtenerHistoriaPorId
     {
         Historia historia = repositorio.FindByID(id);
         if (historia is null)
-            throw new HistoriaException("No se encontró la historia solicitada.");
+            throw new HistoriaNoEncontradaException("No se encontró la historia solicitada.");
 
         return HistoriaMapper.ToDTO(historia);
     }

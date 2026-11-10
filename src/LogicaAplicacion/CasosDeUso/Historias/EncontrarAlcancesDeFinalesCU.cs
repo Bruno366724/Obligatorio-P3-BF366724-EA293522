@@ -20,7 +20,7 @@ public class EncontrarAlcancesDeFinalesCU : IEncontrarAlcancesDeFinales
     {
         Historia historia = repositorio.FindByID(historiaId);
         if (historia is null)
-            throw new HistoriaException("No se encontró la historia solicitada.");
+            throw new HistoriaNoEncontradaException("No se encontró la historia solicitada.");
 
         List<CapituloFinal> finales = historia.Capitulos.OfType<CapituloFinal>().ToList();
         int maximo = finales.Count == 0 ? 0 : finales.Max(final => final.ContadorAlcances);

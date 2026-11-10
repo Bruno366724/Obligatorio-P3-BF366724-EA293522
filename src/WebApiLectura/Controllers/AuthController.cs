@@ -26,7 +26,7 @@ public class AuthController : ControllerBase
     // POST: api/Auth/login
     [HttpPost("login")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
-    [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult Login([FromBody] LoginDTO dto)
     {
@@ -46,7 +46,7 @@ public class AuthController : ControllerBase
         }
         catch (UsuarioException uex)
         {
-            return BadRequest(uex.Message);
+            return Unauthorized(uex.Message);
         }
         catch (Exception)
         {

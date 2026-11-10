@@ -58,7 +58,7 @@ namespace AccesoDatos.Migrations
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("HistoriaId")
+                    b.Property<int?>("HistoriaId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -289,9 +289,7 @@ namespace AccesoDatos.Migrations
 
                     b.HasOne("Dominio.Entidades.Historia", "Historia")
                         .WithMany()
-                        .HasForeignKey("HistoriaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("HistoriaId");
 
                     b.Navigation("Administrador");
 

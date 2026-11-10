@@ -20,11 +20,11 @@ public class AvanzarLecturaCU : IAvanzarLectura
     {
         Lectura lectura = repositorio.FindByID(lecturaId);
         if (lectura is null)
-            throw new LecturaException("No se encontró la lectura solicitada.");
+            throw new LecturaNoEncontradaException("No se encontró la lectura solicitada.");
 
         // La lectura tiene que ser del usuario que pide avanzarla.
         if (lectura.UsuarioId != usuarioId)
-            throw new LecturaException("Esta lectura no te pertenece.");
+            throw new LecturaAjenaException("Esta lectura no te pertenece.");
 
         // Una lectura terminada no se puede seguir avanzando.
         if (lectura.FechaFin.HasValue)

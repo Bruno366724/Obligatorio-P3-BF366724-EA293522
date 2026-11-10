@@ -20,7 +20,7 @@ public class ObtenerLecturaPorIdCU : IObtenerLecturaPorId
     {
         Lectura lectura = repositorio.FindByID(id);
         if (lectura is null)
-            throw new LecturaException("No se encontró la lectura solicitada.");
+            throw new LecturaNoEncontradaException("No se encontró la lectura solicitada.");
 
         return LecturaMapper.ToDTO(lectura);
     }

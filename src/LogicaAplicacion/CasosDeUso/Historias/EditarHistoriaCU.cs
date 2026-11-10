@@ -24,7 +24,7 @@ public class EditarHistoriaCU : IEditarHistoria
     {
         Historia historia = repositorio.FindByID(dto.Id);
         if (historia is null)
-            throw new HistoriaException("No se encontró la historia solicitada.");
+            throw new HistoriaNoEncontradaException("No se encontró la historia solicitada.");
 
         EstadoHistoria estadoAnterior = historia.Estado;
 

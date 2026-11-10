@@ -51,9 +51,9 @@ public class HistoriaController : ControllerBase
         {
             return Ok(obtenerHistoriaPorId.Ejecutar(id));
         }
-        catch (HistoriaException hex)
+        catch (HistoriaNoEncontradaException hnex)
         {
-            return NotFound(hex.Message);
+            return NotFound(hnex.Message);
         }
         catch (Exception)
         {

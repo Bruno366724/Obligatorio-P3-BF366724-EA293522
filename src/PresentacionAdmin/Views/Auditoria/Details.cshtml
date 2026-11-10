@@ -25,7 +25,7 @@
     <dd class="col-sm-10">@administradores.FirstOrDefault(a => a.Id == Model.AdministradorId)?.NombreUsuario</dd>
 
     <dt class="col-sm-2">Historia</dt>
-    <dd class="col-sm-10">@historia?.Titulo</dd>
+    <dd class="col-sm-10">@(historia?.Titulo ?? "(eliminada)")</dd>
 
 @if (capituloTitulo is not null)
 {

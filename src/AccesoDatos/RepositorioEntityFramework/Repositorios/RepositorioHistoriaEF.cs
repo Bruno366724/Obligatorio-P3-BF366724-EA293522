@@ -3,6 +3,7 @@ using Dominio.Enumerados;
 using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace AccesoDatos.RepositorioEntityFramework.Repositorios
 {
@@ -77,11 +78,31 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
         {
             try
             {
-                Historia? historia = contexto.Historias.Find(id);
+                Historia? historia = ConDetalle().FirstOrDefault(h => h.Id == id);
                 if (historia is not null)
                 {
+                    using IDbContextTransaction transaccion = contexto.Database.BeginTransaction();
+
+                    // Desvincula las auditorias de la historia y de sus capitulos.
+                    contexto.Auditorias
+                        .Where(a => a.HistoriaId == id)
+                        .ExecuteUpdate(setters => setters
+                            .SetProperty(a => a.HistoriaId, (int?)null)
+                            .SetProperty(a => a.CapituloId, (int?)null));
+
+                    // Borrado en dos pasos por el ciclo de FKs Historia<->CapituloInicial.
+                    historia.CapituloInicialId = null;
+                    historia.CapituloInicial = null;
+                    contexto.SaveChanges();
+
+                    foreach (CapituloIntermedio intermedio in historia.Capitulos.OfType<CapituloIntermedio>())
+                        contexto.Opciones.RemoveRange(intermedio.Opciones);
+
+                    contexto.Capitulos.RemoveRange(historia.Capitulos);
                     contexto.Historias.Remove(historia);
                     contexto.SaveChanges();
+
+                    transaccion.Commit();
                 }
             }
             catch (Exception)

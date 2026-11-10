@@ -62,7 +62,7 @@ else
                 <td>@auditoria.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>@auditoria.Accion</td>
                 <td>@administradores.FirstOrDefault(a => a.Id == auditoria.AdministradorId)?.NombreUsuario</td>
-                <td>@historias.FirstOrDefault(h => h.Id == auditoria.HistoriaId)?.Titulo</td>
+                <td>@(historias.FirstOrDefault(h => h.Id == auditoria.HistoriaId)?.Titulo ?? "(eliminada)")</td>
                 <td><a asp-action="Details" asp-route-id="@auditoria.Id">Detalles</a></td>
             </tr>
 }

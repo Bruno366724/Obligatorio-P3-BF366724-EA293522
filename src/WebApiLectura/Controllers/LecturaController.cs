@@ -47,13 +47,13 @@ public class LecturaController : ControllerBase
         {
             LecturaDTO lectura = obtenerLecturaPorId.Ejecutar(id);
             if (lectura.UsuarioId != UsuarioId)
-                return Forbid();
+                return StatusCode(403, "Esta lectura no te pertenece.");
 
             return Ok(lectura);
         }
-        catch (LecturaException lex)
+        catch (LecturaNoEncontradaException lnex)
         {
-            return NotFound(lex.Message);
+            return NotFound(lnex.Message);
         }
         catch (Exception)
         {
@@ -77,16 +77,22 @@ public class LecturaController : ControllerBase
         }
     }
 
-    // POST: api/Lectura/Iniciar
+    // POST: api/Lectura/Iniciar -- 201 con la URL de la lectura creada.
     [HttpPost("Iniciar")]
-    [ProducesResponseType((int)HttpStatusCode.OK)]
+    [ProducesResponseType((int)HttpStatusCode.Created)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<LecturaDTO> Iniciar(IniciarLecturaRequestDTO request)
     {
         try
         {
-            return Ok(iniciarLectura.Ejecutar(UsuarioId, request.HistoriaId));
+            LecturaDTO lectura = iniciarLectura.Ejecutar(UsuarioId, request.HistoriaId);
+            return CreatedAtAction(nameof(Get), new { id = lectura.Id }, lectura);
+        }
+        catch (HistoriaNoEncontradaException hnex)
+        {
+            return NotFound(hnex.Message);
         }
         catch (LecturaException lex)
         {
@@ -102,12 +108,22 @@ public class LecturaController : ControllerBase
     [HttpPost("{id}/Avanzar")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType((int)HttpStatusCode.Forbidden)]
+    [ProducesResponseType((int)HttpStatusCode.NotFound)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
     public ActionResult<LecturaDTO> Avanzar(int id, AvanzarLecturaRequestDTO request)
     {
         try
         {
             return Ok(avanzarLectura.Ejecutar(id, request.OpcionId, UsuarioId));
+        }
+        catch (LecturaNoEncontradaException lnex)
+        {
+            return NotFound(lnex.Message);
+        }
+        catch (LecturaAjenaException laex)
+        {
+            return StatusCode(403, laex.Message);
         }
         catch (LecturaException lex)
         {

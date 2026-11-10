@@ -10,7 +10,7 @@ public class Auditoria : IValidable
     public string Accion { get; set; } = string.Empty;
     public int AdministradorId { get; set; }
     public Usuario? Administrador { get; set; }
-    public int HistoriaId { get; set; }
+    public int? HistoriaId { get; set; }
     public Historia? Historia { get; set; }
     public int? CapituloId { get; set; }
     public Capitulo? Capitulo { get; set; }
@@ -23,7 +23,8 @@ public class Auditoria : IValidable
         if (AdministradorId <= 0 && Administrador is null)
             throw new AuditoriaException("La auditoría debe estar asociada a un administrador.");
 
-        if (HistoriaId <= 0 && Historia is null)
+        // Sin historia solo puede quedar la auditoria de una baja (la historia ya no existe).
+        if (HistoriaId is null && Historia is null && !Accion.StartsWith("Baja de historia"))
             throw new AuditoriaException("La auditoría debe estar asociada a una historia.");
     }
 }

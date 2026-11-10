@@ -69,7 +69,14 @@ namespace AccesoDatos.RepositorioEntityFramework.Repositorios
                 .ToList();
         }
 
+        // Hay al menos una lectura (en curso o terminada) de la historia.
+        public bool ExistenDeHistoria(int historiaId)
+        {
+            return contexto.Lecturas.Any(l => l.HistoriaId == historiaId);
+        }
+
         public void Remove(int id)
+
         {
             try
             {

@@ -45,6 +45,10 @@
             {
                 <div class="validation-summary-errors"><ul><li>@error</li></ul></div>
             }
+            @if (TempData["Mensaje"] is string mensaje)
+            {
+                <div class="alert alert-success">@mensaje</div>
+            }
             @RenderBody()
         </main>
     </div>

@@ -18,6 +18,7 @@ public class HistoriaController : Controller
     private readonly IEditarHistoria editarHistoria;
     private readonly IEncontrarTodasCategorias encontrarTodasCategorias;
     private readonly IAgregarCapitulo agregarCapitulo;
+    private readonly IEliminarHistoria eliminarHistoria;
 
     public HistoriaController(
         IAgregarHistoria agregarHistoriaCu,
@@ -25,7 +26,8 @@ public class HistoriaController : Controller
         IEncontrarTodasHistorias encontrarTodasHistoriasCu,
         IEditarHistoria editarHistoriaCu,
         IEncontrarTodasCategorias encontrarTodasCategoriasCu,
-        IAgregarCapitulo agregarCapituloCu)
+        IAgregarCapitulo agregarCapituloCu,
+        IEliminarHistoria eliminarHistoriaCu)
     {
         agregarHistoria = agregarHistoriaCu;
         obtenerHistoriaPorId = obtenerHistoriaPorIdCu;
@@ -33,6 +35,7 @@ public class HistoriaController : Controller
         editarHistoria = editarHistoriaCu;
         encontrarTodasCategorias = encontrarTodasCategoriasCu;
         agregarCapitulo = agregarCapituloCu;
+        eliminarHistoria = eliminarHistoriaCu;
     }
 
     // Usuario logueado, para los casos de uso que auditan.
@@ -158,7 +161,49 @@ public class HistoriaController : Controller
         }
     }
 
+    // Pantalla de confirmacion de la baja.
+    public ActionResult Delete(int id)
+    {
+        try
+        {
+            return View(obtenerHistoriaPorId.Ejecutar(id));
+        }
+        catch (HistoriaException hex)
+        {
+            TempData["Error"] = hex.Message;
+            return RedirectToAction(nameof(Index));
+        }
+        catch
+        {
+            TempData["Error"] = "Error inesperado al cargar la historia.";
+            return RedirectToAction(nameof(Index));
+        }
+    }
+
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public ActionResult DeleteConfirmado(int id)
+    {
+        try
+        {
+            eliminarHistoria.Ejecutar(id, AdministradorId);
+            TempData["Mensaje"] = "Historia eliminada correctamente.";
+            return RedirectToAction(nameof(Index));
+        }
+        catch (HistoriaException hex)
+        {
+            ModelState.AddModelError(string.Empty, hex.Message);
+            return Delete(id);
+        }
+        catch
+        {
+            ModelState.AddModelError(string.Empty, "Error inesperado al eliminar la historia, vuelva a intentar.");
+            return Delete(id);
+        }
+    }
+
     // Agrega un capitulo (intermedio o final) a continuacion de un capitulo intermedio.
+
     public ActionResult AgregarCapitulo(int historiaId, int capituloAntecedenteId)
     {
         try

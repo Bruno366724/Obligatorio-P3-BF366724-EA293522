@@ -22,7 +22,7 @@ public class AgregarCapituloCU : IAgregarCapitulo
     {
         Historia historia = repositorio.FindByID(historiaId);
         if (historia is null)
-            throw new HistoriaException("No se encontró la historia solicitada.");
+            throw new HistoriaNoEncontradaException("No se encontró la historia solicitada.");
 
         // El antecedente tiene que ser un capitulo de esta misma historia, de tipo intermedio.
         Capitulo antecedente = historia.Capitulos.FirstOrDefault(capitulo => capitulo.Id == capituloAntecedenteId);

@@ -55,9 +55,9 @@ public class EstadisticaController : ControllerBase
         {
             return Ok(encontrarAlcancesDeFinales.Ejecutar(historiaId));
         }
-        catch (HistoriaException hex)
+        catch (HistoriaNoEncontradaException hnex)
         {
-            return NotFound(hex.Message);
+            return NotFound(hnex.Message);
         }
         catch (Exception)
         {
