@@ -24,7 +24,9 @@ public class HistoriaController : ControllerBase
         obtenerHistoriaPorId = obtenerHistoriaPorIdCu;
     }
 
-    // GET: api/Historia?categoriaId=5 -- solo Publicadas, categoria opcional.
+    /// <summary>Lista las historias publicadas, con filtro opcional por categoría (RF07).</summary>
+    /// <param name="categoriaId">Id de la categoría (opcional).</param>
+    /// <response code="200">Historias publicadas.</response>
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
@@ -40,7 +42,10 @@ public class HistoriaController : ControllerBase
         }
     }
 
-    // GET: api/Historia/5
+    /// <summary>Devuelve una historia con sus capítulos y opciones.</summary>
+    /// <param name="id">Id de la historia.</param>
+    /// <response code="200">La historia pedida.</response>
+    /// <response code="404">La historia no existe.</response>
     [HttpGet("{id}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]

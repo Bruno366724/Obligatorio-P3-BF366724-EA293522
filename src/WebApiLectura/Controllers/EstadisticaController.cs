@@ -28,7 +28,9 @@ public class EstadisticaController : ControllerBase
         encontrarRankingUsuarios = encontrarRankingUsuariosCu;
     }
 
-    // GET: api/Estadistica/HistoriasMasLeidas -- lista vacia (200) si no hay lecturas completadas.
+    /// <summary>Ranking de historias por cantidad de lecturas completadas (RF09).</summary>
+    /// <response code="200">Ranking de mayor a menor; lista vacía si no hay lecturas completadas.</response>
+    /// <response code="403">El usuario no es Administrador.</response>
     [HttpGet("HistoriasMasLeidas")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
@@ -44,7 +46,11 @@ public class EstadisticaController : ControllerBase
         }
     }
 
-    // GET: api/Estadistica/FinalesPorHistoria/9
+    /// <summary>Cantidad de veces que se alcanzó cada final de una historia, marcando el más frecuente (RF10).</summary>
+    /// <param name="historiaId">Id de la historia.</param>
+    /// <response code="200">Finales de la historia con su contador.</response>
+    /// <response code="403">El usuario no es Administrador.</response>
+    /// <response code="404">La historia no existe.</response>
     [HttpGet("FinalesPorHistoria/{historiaId}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -65,7 +71,9 @@ public class EstadisticaController : ControllerBase
         }
     }
 
-    // GET: api/Estadistica/UsuariosConMasHistorias -- lista vacia (200) si nadie completo ninguna.
+    /// <summary>Ranking de usuarios por cantidad de historias distintas completadas (RF11).</summary>
+    /// <response code="200">Ranking de mayor a menor; lista vacía si nadie completó ninguna.</response>
+    /// <response code="403">El usuario no es Administrador.</response>
     [HttpGet("UsuariosConMasHistorias")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]

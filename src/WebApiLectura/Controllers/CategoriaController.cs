@@ -19,7 +19,8 @@ public class CategoriaController : ControllerBase
         encontrarTodasCategorias = encontrarTodasCategoriasCu;
     }
 
-    // GET: api/Categoria
+    /// <summary>Lista todas las categorías.</summary>
+    /// <response code="200">Listado de categorías.</response>
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]

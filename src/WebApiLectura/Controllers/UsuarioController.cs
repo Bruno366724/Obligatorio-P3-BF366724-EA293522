@@ -24,7 +24,9 @@ public class UsuarioController : ControllerBase
         obtenerUsuarioPorId = obtenerUsuarioPorIdCu;
     }
 
-    // GET: api/Usuario
+    /// <summary>Lista todos los usuarios.</summary>
+    /// <response code="200">Listado de usuarios.</response>
+    /// <response code="403">El usuario no es Administrador.</response>
     [HttpGet]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
@@ -40,7 +42,11 @@ public class UsuarioController : ControllerBase
         }
     }
 
-    // GET: api/Usuario/5
+    /// <summary>Devuelve un usuario por id.</summary>
+    /// <param name="id">Id del usuario.</param>
+    /// <response code="200">El usuario pedido.</response>
+    /// <response code="403">El usuario no es Administrador.</response>
+    /// <response code="404">El usuario no existe.</response>
     [HttpGet("{id}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]

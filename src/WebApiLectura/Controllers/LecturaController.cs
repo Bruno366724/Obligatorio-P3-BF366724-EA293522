@@ -35,7 +35,11 @@ public class LecturaController : ControllerBase
     // El UsuarioId siempre sale del token, nunca del body/query.
     private int UsuarioId => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-    // GET: api/Lectura/5 -- chequea pertenencia aca (el CU es generico, sin esa nocion).
+    /// <summary>Devuelve una lectura del usuario logueado.</summary>
+    /// <param name="id">Id de la lectura.</param>
+    /// <response code="200">La lectura pedida.</response>
+    /// <response code="403">La lectura es de otro usuario.</response>
+    /// <response code="404">La lectura no existe.</response>
     [HttpGet("{id}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Forbidden)]
@@ -61,7 +65,10 @@ public class LecturaController : ControllerBase
         }
     }
 
-    // GET: api/Lectura/Historial?mes=10&anio=2026 -- lista vacia (200) si no hay lecturas.
+    /// <summary>Historial de lecturas del usuario logueado en un mes y año (RF08).</summary>
+    /// <param name="mes">Mes (1 a 12).</param>
+    /// <param name="anio">Año.</param>
+    /// <response code="200">Lecturas del período; lista vacía si no hay.</response>
     [HttpGet("Historial")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
@@ -77,7 +84,10 @@ public class LecturaController : ControllerBase
         }
     }
 
-    // POST: api/Lectura/Iniciar -- 201 con la URL de la lectura creada.
+    /// <summary>Inicia una lectura nueva de una historia publicada, en su capítulo inicial (RF07).</summary>
+    /// <response code="201">Lectura creada; el encabezado Location apunta a ella.</response>
+    /// <response code="400">La historia no está publicada o no tiene capítulo inicial.</response>
+    /// <response code="404">La historia no existe.</response>
     [HttpPost("Iniciar")]
     [ProducesResponseType((int)HttpStatusCode.Created)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]
@@ -104,7 +114,12 @@ public class LecturaController : ControllerBase
         }
     }
 
-    // POST: api/Lectura/5/Avanzar
+    /// <summary>Avanza la lectura eligiendo una opción del capítulo actual; si llega a un final, la cierra (RF07).</summary>
+    /// <param name="id">Id de la lectura.</param>
+    /// <response code="200">Lectura actualizada.</response>
+    /// <response code="400">La opción no es del capítulo actual o la lectura ya terminó.</response>
+    /// <response code="403">La lectura es de otro usuario.</response>
+    /// <response code="404">La lectura no existe.</response>
     [HttpPost("{id}/Avanzar")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.BadRequest)]

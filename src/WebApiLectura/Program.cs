@@ -1,5 +1,6 @@
 // Web API de Lectura (RF06+): login con JWT, historias, lecturas.
 
+using System.Reflection;
 using System.Text;
 using AccesoDatos.RepositorioEntityFramework;
 using AccesoDatos.RepositorioEntityFramework.Repositorios;
@@ -27,6 +28,10 @@ builder.Services.AddControllers();
 // Esquema de seguridad para que Swagger muestre el boton "Authorize" con JWT.
 builder.Services.AddSwaggerGen(options =>
 {
+    // Comentarios XML de los controllers como documentacion de cada endpoint.
+    string archivoXml = Path.Combine(AppContext.BaseDirectory, $"{Assembly.GetExecutingAssembly().GetName().Name}.xml");
+    options.IncludeXmlComments(archivoXml);
+
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -108,11 +113,9 @@ builder.Services.AddScoped<IEncontrarTodasAuditorias, EncontrarTodasAuditoriasCU
 
 WebApplication app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Swagger en todos los entornos, tambien en el despliegue (Somee).
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 

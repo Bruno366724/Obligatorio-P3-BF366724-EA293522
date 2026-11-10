@@ -23,7 +23,9 @@ public class AuthController : ControllerBase
         configuracion = configuration;
     }
 
-    // POST: api/Auth/login
+    /// <summary>Inicia sesión y devuelve el token JWT junto con los datos del usuario.</summary>
+    /// <response code="200">Credenciales válidas: devuelve el token y el usuario (sin contraseña).</response>
+    /// <response code="401">Usuario o contraseña incorrectos.</response>
     [HttpPost("login")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
