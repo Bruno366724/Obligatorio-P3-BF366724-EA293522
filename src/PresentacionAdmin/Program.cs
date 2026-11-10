@@ -37,8 +37,6 @@ builder.Services.AddScoped<IObtenerUsuarioPorId, ObtenerUsuarioPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodosUsuarios, EncontrarTodosUsuariosCU>();
 builder.Services.AddScoped<IIniciarSesion, IniciarSesionCU>();
 
-builder.Services.AddScoped<IAgregarCategoria, AgregarCategoriaCU>();
-builder.Services.AddScoped<IObtenerCategoriaPorId, ObtenerCategoriaPorIdCU>();
 builder.Services.AddScoped<IEncontrarTodasCategorias, EncontrarTodasCategoriasCU>();
 
 builder.Services.AddScoped<IAgregarHistoria, AgregarHistoriaCU>();
