@@ -1,4 +1,5 @@
 using Dominio.Entidades;
+using Dominio.Enumerados;
 using Dominio.Excepciones;
 using Dominio.InterfacesRepositorios;
 using DTOs.DTOs;
@@ -23,6 +24,10 @@ public class AgregarCapituloCU : IAgregarCapitulo
         Historia historia = repositorio.FindByID(historiaId);
         if (historia is null)
             throw new HistoriaNoEncontradaException("No se encontró la historia solicitada.");
+
+        // Un intermedio nace sin opciones: dejaria invalida una historia ya publicada.
+        if (!esFinal && historia.Estado == EstadoHistoria.Publicada)
+            throw new HistoriaException("No se puede agregar un capítulo intermedio a una historia publicada. Pasala a Borrador desde Editar, completala y volvé a publicarla.");
 
         // El antecedente tiene que ser un capitulo de esta misma historia, de tipo intermedio.
         Capitulo antecedente = historia.Capitulos.FirstOrDefault(capitulo => capitulo.Id == capituloAntecedenteId);
