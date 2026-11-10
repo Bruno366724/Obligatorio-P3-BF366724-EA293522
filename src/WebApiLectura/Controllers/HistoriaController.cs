@@ -1,4 +1,5 @@
 using System.Net;
+using Dominio.Enumerados;
 using Dominio.Excepciones;
 using DTOs.DTOs;
 using LogicaAplicacion.InterfacesDeCasoDeUso.Historias;
@@ -45,7 +46,7 @@ public class HistoriaController : ControllerBase
     /// <summary>Devuelve una historia con sus capítulos y opciones.</summary>
     /// <param name="id">Id de la historia.</param>
     /// <response code="200">La historia pedida.</response>
-    /// <response code="404">La historia no existe.</response>
+    /// <response code="404">La historia no existe, o el usuario es Lector y la historia no está publicada.</response>
     [HttpGet("{id}")]
     [ProducesResponseType((int)HttpStatusCode.OK)]
     [ProducesResponseType((int)HttpStatusCode.NotFound)]
@@ -54,7 +55,13 @@ public class HistoriaController : ControllerBase
     {
         try
         {
-            return Ok(obtenerHistoriaPorId.Ejecutar(id));
+            HistoriaDTO historia = obtenerHistoriaPorId.Ejecutar(id);
+
+            // Un Lector solo ve historias publicadas: un borrador es como si no existiera.
+            if (User.IsInRole("Lector") && historia.Estado != EstadoHistoria.Publicada)
+                return NotFound("No se encontró la historia solicitada.");
+
+            return Ok(historia);
         }
         catch (HistoriaNoEncontradaException hnex)
         {

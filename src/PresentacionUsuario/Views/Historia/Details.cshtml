@@ -19,9 +19,13 @@
 <div class="mt-3">
     @* RF07: arranca una lectura nueva desde el capitulo inicial. Es un POST (crea un
        recurso) aunque se dispare desde un link visualmente. *@
-    <form asp-controller="Lectura" asp-action="Iniciar" method="post" class="d-inline">
-        <input type="hidden" name="historiaId" value="@Model.Id" />
-        <button type="submit" class="btn btn-primary">Comenzar a leer</button>
-    </form>
+    @* Solo el Lector puede leer; la API rechaza al Administrador. *@
+    @if (Context.Session.GetString("Rol") == "Lector")
+    {
+        <form asp-controller="Lectura" asp-action="Iniciar" method="post" class="d-inline">
+            <input type="hidden" name="historiaId" value="@Model.Id" />
+            <button type="submit" class="btn btn-primary">Comenzar a leer</button>
+        </form>
+    }
     <a asp-action="Index" class="btn btn-outline-secondary">Volver al listado</a>
 </div>
