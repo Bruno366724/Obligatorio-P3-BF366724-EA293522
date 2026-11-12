@@ -36,6 +36,24 @@
                     <label for="estado">Estado</label>
                     <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<EstadoHistoria>()"></select>
                 </div>
+@* El capitulo inicial solo se puede modificar mientras sea el unico capitulo de la historia. *@
+@if (Model.Capitulos.Count == 1)
+{
+                DTOs.DTOs.CapituloDTO capituloInicial = Model.Capitulos.Single();
+                <input type="hidden" name="editaCapituloInicial" value="true" />
+                <div class="form-group">
+                    <label for="capituloInicialTitulo">Título del capítulo inicial</label>
+                    <input name="capituloInicialTitulo" id="capituloInicialTitulo" class="form-control" value="@capituloInicial.Titulo" />
+                </div>
+                <div class="form-group">
+                    <label for="capituloInicialTexto">Texto del capítulo inicial</label>
+                    <textarea name="capituloInicialTexto" id="capituloInicialTexto" class="form-control">@capituloInicial.Texto</textarea>
+                </div>
+}
+else
+{
+                <p class="text-muted mt-2 mb-0">El capítulo inicial ya no se puede modificar porque la historia tiene otros capítulos.</p>
+}
 
                 <div class="form-group mt-3">
                     <input type="submit" value="Guardar" class="btn btn-primary w-100" />

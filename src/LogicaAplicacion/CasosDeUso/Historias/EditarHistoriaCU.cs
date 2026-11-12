@@ -32,6 +32,8 @@ public class EditarHistoriaCU : IEditarHistoria
         historia.Sinopsis = dto.Sinopsis;
         historia.Categorias = dto.Categorias.Select(CategoriaMapper.FromDTO).ToList();
 
+        Capitulo? capituloInicialEditado = EditarCapituloInicial(historia, dto);
+
         if (dto.Estado == EstadoHistoria.Publicada)
         {
             historia.ValidarParaPublicar();
@@ -53,5 +55,39 @@ public class EditarHistoriaCU : IEditarHistoria
             AdministradorId = administradorId,
             HistoriaId = historia.Id
         });
+
+        // Registra la auditoria de la edicion del capitulo inicial, si cambio.
+        if (capituloInicialEditado is not null)
+        {
+            agregarAuditoria.Ejecutar(new AuditoriaDTO
+            {
+                Accion = "Edición de capítulo inicial",
+                AdministradorId = administradorId,
+                HistoriaId = historia.Id,
+                CapituloId = capituloInicialEditado.Id
+            });
+        }
+    }
+
+    // Modifica titulo y texto del capitulo inicial; solo si la historia no tiene otros capitulos.
+    private Capitulo? EditarCapituloInicial(Historia historia, HistoriaDTO dto)
+    {
+        CapituloDTO? capituloDto = dto.Capitulos.FirstOrDefault();
+        if (capituloDto is null)
+            return null;
+
+        if (historia.Capitulos.Count > 1)
+            throw new HistoriaException("No se puede modificar el capítulo inicial porque la historia ya tiene otros capítulos.");
+
+        if (string.IsNullOrWhiteSpace(capituloDto.Titulo) || string.IsNullOrWhiteSpace(capituloDto.Texto))
+            throw new HistoriaException("El título y el texto del capítulo inicial son obligatorios.");
+
+        Capitulo capituloInicial = historia.Capitulos.Single(capitulo => capitulo.Id == historia.CapituloInicialId);
+        if (capituloInicial.Titulo == capituloDto.Titulo && capituloInicial.Texto == capituloDto.Texto)
+            return null;
+
+        capituloInicial.Titulo = capituloDto.Titulo;
+        capituloInicial.Texto = capituloDto.Texto;
+        return capituloInicial;
     }
 }

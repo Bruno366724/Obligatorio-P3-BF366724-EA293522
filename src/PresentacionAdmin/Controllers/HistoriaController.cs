@@ -133,10 +133,11 @@ public class HistoriaController : Controller
         }
     }
 
-    // Campos sueltos, igual que en Create. La edición no toca Capitulos.
+    // Campos sueltos, igual que en Create. El capitulo inicial solo viaja si la vista lo ofrece.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public ActionResult Edit(int id, string titulo, string sinopsis, List<int> categoriaIds, EstadoHistoria estado)
+    public ActionResult Edit(int id, string titulo, string sinopsis, List<int> categoriaIds, EstadoHistoria estado,
+        bool editaCapituloInicial, string capituloInicialTitulo, string capituloInicialTexto)
     {
         try
         {
@@ -148,6 +149,15 @@ public class HistoriaController : Controller
                 Categorias = categoriaIds.Select(categoriaId => new CategoriaDTO { Id = categoriaId }).ToList(),
                 Estado = estado
             };
+
+            if (editaCapituloInicial)
+            {
+                dto.Capitulos.Add(new CapituloIntermedioDTO
+                {
+                    Titulo = capituloInicialTitulo ?? string.Empty,
+                    Texto = capituloInicialTexto ?? string.Empty
+                });
+            }
 
             editarHistoria.Ejecutar(dto, AdministradorId);
             return RedirectToAction(nameof(Index));
