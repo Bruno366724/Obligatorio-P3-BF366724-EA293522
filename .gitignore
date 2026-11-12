@@ -372,3 +372,5 @@ FodyWeavers.xsd
 
 # Archivos temporales de Word
 ~$*
+
+appsettings.Production.json
