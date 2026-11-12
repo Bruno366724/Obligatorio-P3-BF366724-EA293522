@@ -27,6 +27,10 @@ public class AgregarHistoriaCU : IAgregarHistoria
         if (dto.Capitulos.Single() is not CapituloIntermedioDTO capituloInicialDto)
             throw new HistoriaException("El capítulo inicial de una historia debe ser de tipo intermedio.");
 
+        // Valida titulo y texto del capitulo inicial (nace sin opciones, no se valida completo).
+        if (string.IsNullOrWhiteSpace(capituloInicialDto.Titulo) || string.IsNullOrWhiteSpace(capituloInicialDto.Texto))
+            throw new HistoriaException("El título y el texto del capítulo inicial son obligatorios.");
+
         CapituloIntermedio capituloInicial = (CapituloIntermedio)CapituloMapper.FromDTO(capituloInicialDto);
 
         Historia historia = new Historia
