@@ -28,6 +28,10 @@
                 {
                     <strong>(inicial)</strong>
                 }
+                @if (capitulo is DTOs.DTOs.CapituloFinalDTO capituloFinal)
+                {
+                    <span class="badge bg-secondary ms-1">Final — alcanzado @capituloFinal.ContadorAlcances @(capituloFinal.ContadorAlcances == 1 ? "vez" : "veces")</span>
+                }
                 @* Solo los intermedios pueden tener un capítulo siguiente. *@
                 @if (capitulo is DTOs.DTOs.CapituloIntermedioDTO)
                 {
